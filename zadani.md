@@ -47,8 +47,8 @@ Akce, které budou k dispozici v herním módu. Jsou řešeny pomocí příkazů
 - `loot` zobrazí se pokud se hráč přiblíží k entitě (truhla, mrtvá příšera) ze které může vzít nějaký předmět.
 - `end-turn` předčasné ukončení tahu
 
-Celá aplikace je ovládána přes třídu `CAplication`, příkazy jsou zpracovány pomocí třídy `CCommand` a její podtřídy.
-Třída `CInterface` zajišťuje komunikaci s uživatelem (jak vstup tak výstup).
+Celá aplikace je ovládána přes třídu `CAplication`.Třída `CInterface` zajišťuje komunikaci s uživatelem (jak vstup tak
+výstup).
 
 Za fungování menu je zodpovědná třída `CMenu` a za hru je zodpovědná třída `CGame` a místnosti mají svou vlastní třídu a
 to `CRoom`.
@@ -58,7 +58,8 @@ to `CRoom`.
 polymorfismus bude použit v třídě `CEntity` která bude obsahovat všechny entity. Každá podtřída má funkci `Turn`, která
 řídí jejich akce v pruběhu tahu také má funcki  `Attack`,`Attacked` a `Defense`, které řeší útok a obranu pro každou
 entitu. Třída CEntity bude mít podtřídu `CMobile`. Třída `CMobile` má další polymorfní funkci `move`, která zajišťuje
-pohyb entit po mapě. Třída `CPlayer` je podtřídou `CMobile`.
+pohyb entit po mapě. Třída `CPlayer` je podtřídou `CMobile`. Třída `CEntity` a `CMobile` mají podtřídy, které už
+reprezentují danou entity a mají implementované abstraktní funkce.
 
 Dále je polymorfismus využit i v třídě `CItem`, která ma abstraktní funkci `Effect`, která provede efekt předmětu. Tato
-třída má potřídu `CWeapon`, která má ještě navíc abstraktní funkci `Defense`.
+třída má potřídu `CWeapon`, která má ještě navíc abstraktní funkci `Defense` a `Attack`. 

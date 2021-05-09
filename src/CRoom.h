@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "CEntity.h"
+#include "CInterface.h"
 #include "EMapElem.h"
 
 #pragma once
@@ -40,6 +41,11 @@ class CRoom {
   bool TransferEntityFromRoom(std::shared_ptr<CRoom> dest,
                               std::shared_ptr<CEntity> entity,
                               usingned int doorNumber);
+  /**
+   * prints room to the interface
+   * @param interface interface to print through
+   */
+  void Print(const CInterface& interface);
 
  private:
   std::vector<std::vector<EMapElem>> m_Map;  // map of the room

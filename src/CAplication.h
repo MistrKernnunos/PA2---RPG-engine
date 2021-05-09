@@ -1,5 +1,13 @@
 
-#ifndef MACHAVI4_CAPLICATION_H
-#define MACHAVI4_CAPLICATION_H
+#pragma once
+#include "CGame.h"
 
-#endif//MACHAVI4_CAPLICATION_H
+class CAplication {
+ public:
+  CAplication(CInterface interface);
+
+  CAplication & Run();
+
+ private:
+  CGame m_Game;
+};

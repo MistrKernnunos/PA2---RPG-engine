@@ -2,7 +2,17 @@
 // Created by machavi on 5/7/21.
 //
 
-#ifndef MACHAVI4_CINTERFACE_H
-#define MACHAVI4_CINTERFACE_H
+#pragma once
 
-#endif//MACHAVI4_CINTERFACE_H
+#include <iostream>
+#include <string>
+
+class CInterface{
+ public:
+
+
+
+ private:
+  std::ostream & m_Out;
+  std::istream & m_In;
+};
