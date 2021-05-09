@@ -7,7 +7,7 @@ class CMovable : public CEntity {
  public:
   CMovable(const string& name, int height, int width, size_t invSize,
            unsigned int maxHealth, unsigned int nextLevCoef = 5,
-           unsigned int defence, unsigned int attack, unsigned int movement)
+           unsigned int defence = 0, unsigned int attack = 0, unsigned int movement = 1)
       : CEntity(name, height, width, invSize, maxHealth, nextLevCoef, defence,
                 attack),m_Movement(movement) {}
   /**

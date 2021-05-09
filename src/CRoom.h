@@ -47,10 +47,12 @@ class CRoom {
    */
   void Print(const CInterface& interface);
 
+
+
  private:
   std::vector<std::vector<EMapElem>> m_Map;  // map of the room
-  std::vector<std::unique_ptr<CEntity>>
-      m_Entities;  // entities present in the room
+  std::vector<std::tuple<std::unique_ptr<CEntity>,int,int>>
+      m_Entities;  // entities present in the room and their coordinates
   std::vector<std::pair<std::shared_ptr<CRoom>, unsigned int>>
       m_ConnectedRooms;  // index is door which this connection belong to,
                          // pointer to room which connect and door number

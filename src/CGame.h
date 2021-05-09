@@ -1,6 +1,7 @@
 //
 // Created by machavi on 5/7/21.
 //
+#include <memory>
 #include <vector>
 
 #include "CEntity.h"
@@ -13,7 +14,7 @@ class CGame {
  public:
   CGame(const CInterface &interface) : m_Interface(interface){};
   CGame(const CGame &) = delete;
-  operator=(const CGame &) = delete;
+  CGame &operator=(const CGame &) = delete;
 
   bool Load();
 
@@ -23,6 +24,8 @@ class CGame {
 
   bool IsInitialized() const;
 
+  std::shared_ptr<CEntity> GetClosesEntityTo(const int x, const int y);
+  std::pair<int, int> GetPosition(CEntity &entity);
 
  private:
   CInterface m_Interface;

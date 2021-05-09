@@ -2,9 +2,9 @@
 // Created by machavi on 5/9/21.
 //
 
-#include "CMovable.h"
-
 #pragma once
+#include "CGame.h"
+#include "CMovable.h"
 
 class CPlayer : public CEntity {
  public:
@@ -17,7 +17,7 @@ class CPlayer : public CEntity {
   /**
    * executes one turn
    */
-  virtual void Turn();
+  virtual void Turn(CGame& game);
 
   /**
    * Facilitates attack action
@@ -31,7 +31,7 @@ class CPlayer : public CEntity {
    * entity takes enters defense state until start of next turn
    * @return true if successful, false if not (not enough action points)
    */
-  bool Defense() = 0;
+  bool Defense();
   /**
    * handles action if the entity is attacked
    * @param attackPower attack damage of the incoming attack

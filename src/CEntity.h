@@ -2,9 +2,11 @@
 //
 // Created by machavi on 5/7/21.
 //
+#include <string>
 #include <utility>
 #include <vector>
 
+#include "CGame.h"
 #include "CInventory.h"
 #include "CItem.h"
 #pragma once
@@ -15,9 +17,9 @@ class CEntity {
    * Constructor
    * @param name name of the entity
    */
-  CEntity(const string& name, int height, int width, size_t invSize,
+  CEntity(const std::string& name, int height, int width, size_t invSize,
           unsigned int maxHealth, unsigned int nextLevCoef = 5,
-          unsigned int defence, unsigned int attack)
+          unsigned int defence = 0, unsigned int attack = 0)
       : m_Name(name),
         m_Height(height),
         m_Width(width),
@@ -30,7 +32,7 @@ class CEntity {
   /**
    * executes one turn
    */
-  virtual void Turn() = 0;
+  virtual void Turn(CGame& game) = 0;
 
   /**
    * Facilitates attack action
@@ -72,6 +74,8 @@ class CEntity {
 
   unsigned int GetLevel() const;
 
+  void SetHealth(unsigned int health);
+
   const CInventory& GetInventory() const;
 
   CInventory& GetInventory();
@@ -84,10 +88,10 @@ class CEntity {
   const unsigned int m_MaxHealth;
   const unsigned int m_NextLevelCoef;
 
-  // current stats of the entity
+  // current stats of the entityA
   unsigned int m_Health;
-  int m_DefencePower;
-  int m_AttackPower;
+  unsigned int m_DefencePower;
+  unsigned int m_AttackPower;
   unsigned int m_ActionPoints;
   unsigned int m_XP = 0;
   unsigned int m_Level = 1;
