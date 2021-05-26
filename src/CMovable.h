@@ -1,15 +1,16 @@
 //
 // Created by machavi on 5/7/21.
 //
-#include "CEntity.h"
 #pragma once
+#include "CEntity.h"
 class CMovable : public CEntity {
  public:
   CMovable(const string& name, int height, int width, size_t invSize,
-           unsigned int maxHealth, unsigned int nextLevCoef = 5,
-           unsigned int defence = 0, unsigned int attack = 0, unsigned int movement = 1)
+           int maxHealth, int nextLevCoef = 5, int defence = 0, int attack = 0,
+           int movement = 1)
       : CEntity(name, height, width, invSize, maxHealth, nextLevCoef, defence,
-                attack),m_Movement(movement) {}
+                attack),
+        m_Movement(movement) {}
   /**
    *moves entity by x and y
    * @param x
@@ -19,5 +20,5 @@ class CMovable : public CEntity {
   virtual bool move(const int x, const int y) = 0;
 
  private:
-  unsigned int m_Movement;
+  int m_Movement;
 };

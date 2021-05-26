@@ -2,6 +2,7 @@
 //
 // Created by machavi on 5/7/21.
 //
+#pragma once
 #include <string>
 #include <utility>
 #include <vector>
@@ -9,8 +10,7 @@
 #include "CGame.h"
 #include "CInventory.h"
 #include "CItem.h"
-#pragma once
-
+#include "CRoom.h"
 class CEntity {
  public:
   /**
@@ -18,8 +18,7 @@ class CEntity {
    * @param name name of the entity
    */
   CEntity(const std::string& name, int height, int width, size_t invSize,
-          unsigned int maxHealth, unsigned int nextLevCoef = 5,
-          unsigned int defence = 0, unsigned int attack = 0)
+          int maxHealth, int nextLevCoef = 0, int defence = 0, int attack = 0)
       : m_Name(name),
         m_Height(height),
         m_Width(width),
@@ -40,41 +39,43 @@ class CEntity {
    * @return true if the attack was successful, false if not (not enough action
    * points, target too far, etc.)
    */
-  bool Attack(const CEntity& toAttack) = 0;
+  virtual bool Attack(const CEntity& toAttack) = 0;
 
   /**
    * entity takes enters defense state until start of next turn
    * @return true if successful, false if not (not enough action points)
    */
-  bool Defense() = 0;
+virtual  bool Defense() = 0;
   /**
    * handles action if the entity is attacked
    * @param attackPower attack damage of the incoming attack
    * @return the damage that has the entity received
    */
-  int Attacked(const int attackDamage) = 0;
+  virtual int Attacked(const int attackDamage) = 0;
 
   size_t GetHeight() const;
 
   size_t GetWidth() const;
 
-  unsigned int GetMaxHealth() const;
+  int GetMaxHealth() const;
 
-  const string& GetName() const;
+  const std::string& GetName() const;
 
-  unsigned int GetHealth() const;
+  int GetHealth() const;
 
-  unsigned int GetAttackPower() const;
+  int GetAttackPower() const;
 
-  unsigned int GetDefensePower() const;
+  int GetDefensePower() const;
 
-  unsigned int GetActionPoints() const;
+  int GetActionPoints() const;
 
-  unsigned int GetXP() const;
+  int GetXP() const;
 
-  unsigned int GetLevel() const;
+  int GetLevel() const;
 
-  void SetHealth(unsigned int health);
+  void SetHealth(int health);
+
+  bool InsertIntoRomm(const CRoom& room);
 
   const CInventory& GetInventory() const;
 
@@ -82,18 +83,19 @@ class CEntity {
 
  private:
   // information about the entity
-  const string m_Name;
+  const std::string m_Name;
   const size_t m_Height;
   const size_t m_Width;
-  const unsigned int m_MaxHealth;
-  const unsigned int m_NextLevelCoef;
+  const int m_MaxHealth;
+  const int m_NextLevelCoef = 5;
 
-  // current stats of the entityA
-  unsigned int m_Health;
-  unsigned int m_DefencePower;
-  unsigned int m_AttackPower;
-  unsigned int m_ActionPoints;
-  unsigned int m_XP = 0;
-  unsigned int m_Level = 1;
-  CInventory m_Inventory
+  // current stats of the entity
+  int m_Health;
+  int m_DefencePower;
+  int m_AttackPower;
+  int m_ActionPoints;
+  int m_XP = 0;
+  int m_Level = 1;
+  CRoom m_CurrRoom;
+  CInventory m_Inventory;
 };

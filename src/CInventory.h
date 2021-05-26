@@ -1,12 +1,12 @@
 //
 // Created by machavi on 5/9/21.
 //
+
+#pragma once
 #include <memory>
 #include <vector>
 
 #include "CItem.h"
-
-#pragma once
 
 class CInventory {
  public:

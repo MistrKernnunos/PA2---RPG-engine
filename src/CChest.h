@@ -7,9 +7,9 @@
 
 class CChest : public CEntity {
   CChest(const string& name = "chest", int height = 2, int width = 2,
-         size_t invSize = 100, unsigned int maxHealth = 100,
-         unsigned int nextLevCoef = 5, unsigned int defence = 1000,
-         unsigned int attack = 0)
+         size_t invSize = 100,  int maxHealth = 100,
+          int nextLevCoef = 5,  int defence = 1000,
+          int attack = 0)
       : CEntity(name, height, width, invSize, maxHealth, nextLevCoef, def,
                 attack) {}
   /**

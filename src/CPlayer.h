@@ -9,8 +9,8 @@
 class CPlayer : public CEntity {
  public:
   CPlayer(const string& name, int height, int width, size_t invSize,
-          unsigned int maxHealth, unsigned int nextLevCoef = 5,
-          unsigned int defence, unsigned int attack)
+           int maxHealth,  int nextLevCoef = 5,
+           int defence,  int attack)
       : CEntity(name, height, width, invSize, maxHealth, nextLevCoef, defence,
                 attack) {}
 

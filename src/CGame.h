@@ -1,6 +1,7 @@
 //
 // Created by machavi on 5/7/21.
 //
+#pragma once
 #include <memory>
 #include <vector>
 
@@ -8,7 +9,6 @@
 #include "CInterface.h"
 #include "CRoom.h"
 
-#pragma once
 
 class CGame {
  public:
@@ -16,7 +16,9 @@ class CGame {
   CGame(const CGame &) = delete;
   CGame &operator=(const CGame &) = delete;
 
-  bool Load();
+  bool LoadGame();
+
+  bool LoadMap();
 
   bool Save() const;
 

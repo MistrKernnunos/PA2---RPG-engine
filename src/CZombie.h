@@ -11,9 +11,9 @@
 class CZombie : public CMovable {
  public:
   CZombie(const string& name, int height, int width, size_t invSize,
-          unsigned int maxHealth, unsigned int nextLevCoef = 5,
-          unsigned int defence = 1, unsigned int attack = 2,
-          unsigned int movement = 3)
+           int maxHealth,  int nextLevCoef = 5,
+           int defence = 1,  int attack = 2,
+           int movement = 3)
       : CMovable(name, height, width, invSize, maxHealth, nextLevCoef, defence,
                  attack, movement) {}
 
@@ -55,7 +55,7 @@ bool CZombie::Attack(const CEntity& toAttack) {
 }
 
 int CZombie::Attacked(const int attackDamage) {
-  unsigned int health = GetHealth() - attackDamage + GetDefensePower();
+   int health = GetHealth() - attackDamage + GetDefensePower();
   SetHealth(health);
   return health;
 }
