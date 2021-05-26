@@ -64,19 +64,40 @@ class CRoom {
   std::vector<CWall> perimeterWalls;
   std::vector<CWall> innerWalls;
 
+  /**
+   * loads perimeter walls to the room from xml tree
+   * @param iterator  pointing to perimeter node
+   * @return true if successfully loaded
+   */
   bool loadPerimeter(CFileLoaderIt iterator);
+  /**
+   * loads inner walls from xml tree
+   * @param iterator  pointing to inner node
+   * @return true if successfully loaded
+   */
   bool loadInner(CFileLoaderIt iterator);
+  /**
+   * loads single wall from xml tree
+   * throws exception if coordinate is not valid or the wall is not straight
+   * @param iterator pointing to wall node
+   * @return wall which it loaded
+   */
   CWall loadWall(CFileLoaderIt iterator);
+  /**
+   * checks perimeter walls if they create single shape
+   * @return returns true if the the walls create single shape
+   */
+  bool checkPerimeter();
 };
 
 bool CRoom::Load(CFileLoaderIt iterator) {
-  if (!iterator.Child()) return false;  // move to text node
-  if (!iterator.Next()) return false;   // move to perimeter node
-  if (!loadPerimeter(iterator)) return false;
-  if (!iterator.Next()) return false;  // move to text node
-  if (!iterator.Next()) return false;  // move to perimeter node
-  if (!loadInner(iterator)) return false;
-
+  if (!iterator.Child()) return false;         // move to text node
+  if (!iterator.Next()) return false;          // move to perimeter node
+  if (!loadPerimeter(iterator)) return false;  // load perimeter walls
+  if (!checkPerimeter()) return false;         // checks whether perimeter walls create continuous shape
+  if (!iterator.Next()) return false;          // move to text node
+  if (!iterator.Next()) return false;          // move to perimeter node
+  if (!loadInner(iterator)) return false;      // load inner walls
   return true;
 }
 
@@ -86,7 +107,8 @@ bool CRoom::loadPerimeter(CFileLoaderIt iterator) {
   for (; iterator.Valid(); iterator.Next(), iterator.Next()) {
     try {
       perimeterWalls.push_back(loadWall(iterator));
-    } catch (...) {
+    } catch (std::exception& error) {
+      std::cout << error.what() << std::endl;
       return false;
     }
   }
@@ -98,7 +120,8 @@ bool CRoom::loadInner(CFileLoaderIt iterator) {
   for (; iterator.Valid(); iterator.Next(), iterator.Next()) {
     try {
       innerWalls.push_back(loadWall(iterator));
-    } catch (...) {
+    } catch (std::exception& error) {
+      std::cout << error.what() << std::endl;
       return false;
     }
   }
@@ -112,6 +135,9 @@ CWall CRoom::loadWall(CFileLoaderIt iterator) {
   for (size_t i = 0; i < 4; ++i, iterator.Next(), iterator.Next()) {
     coordinates[i] = std::stoi(iterator.GetContent());
   }
+  if (coordinates[0] != coordinates[2] && coordinates[1] != coordinates[3]) {
+    throw std::invalid_argument("wall is not straight");
+  }
 #ifdef DEBUG
   for (int elem : coordinates) {
     std::cout << elem << " ";
@@ -119,4 +145,18 @@ CWall CRoom::loadWall(CFileLoaderIt iterator) {
   std::cout << std::endl;
 #endif
   return CWall(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+}
+
+bool CRoom::checkPerimeter() {
+  if (!perimeterWalls.front().Connects(perimeterWalls.back())) {
+    return false;
+  }
+  size_t numOfWalls = perimeterWalls.size() - 1;
+  for (size_t i = 0; i < numOfWalls; ++i) {
+    if (!perimeterWalls.at(i).Connects(perimeterWalls.at(i + 1))) {
+      throw std::invalid_argument("perimeter walls do not create continuous shape");
+      return false;
+    }
+  }
+  return true;
 }
