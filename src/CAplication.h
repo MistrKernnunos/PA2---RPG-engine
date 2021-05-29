@@ -8,6 +8,8 @@ class CAplication {
 
   CAplication & Run();
 
+
+
  private:
   CGame m_Game;
 };

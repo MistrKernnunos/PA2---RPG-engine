@@ -64,11 +64,17 @@ bool CFileLoaderIt::Prev() const {
 }
 
 std::string CFileLoaderIt::GetName() const {
+  if (!doc) {
+    return "";
+  }
   std::string name((const char*)curr->name);
   return name;
 }
 std::list<std::pair<std::string, std::string>> CFileLoaderIt::GetProperties() const {
   std::list<std::pair<std::string, std::string>> res;
+  if (!curr) {
+    return res;
+  }
   for (xmlAttr* attribute = curr->properties; attribute; attribute = attribute->next) {
     res.emplace_back(std::string((const char*)attribute->name),
                      std::string((const char*)xmlGetProp(curr, attribute->name)));
@@ -76,6 +82,9 @@ std::list<std::pair<std::string, std::string>> CFileLoaderIt::GetProperties() co
   return res;
 }
 std::string CFileLoaderIt::GetContent() const {
+  if (!doc) {
+    return "";
+  }
   xmlChar* content = xmlNodeListGetString(doc, curr->children, 1);
   std::string res((const char*)content);
   xmlFree(content);

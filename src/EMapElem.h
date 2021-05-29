@@ -4,12 +4,11 @@
 #include <iostream>
 #pragma once
 
-enum class EMapElem{
-  FLOOR = ' '
-  WALL = '#'
-  DOOR = '|'
-};
+enum class EMapElem { FLOOR = ' ', WALL = '#', DOOR = '|' };
 
-std::ostream & operator<< ( std::ostream & out, EMapElem elem );
+std::ostream& operator<<(std::ostream& out, EMapElem elem) {
+  out << elem;
+  return out;
+}
 
-std::istream & operator>> ( std::istream & in, EMapElem & elem );
+std::istream& operator>>(std::istream& in, EMapElem& elem);
