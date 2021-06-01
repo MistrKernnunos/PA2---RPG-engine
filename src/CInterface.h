@@ -4,6 +4,7 @@
 
 #pragma once
 #include <iostream>
+#include <limits>
 #include <string>
 #include <utility>
 
@@ -16,7 +17,7 @@ class CInterface {
   void Message(const std::string& message) const;
 
   template <class T>
-  std::ostream& Print(const T toPrint);
+  std::ostream& Print(const T& toPrint);
 
  private:
   std::ostream& m_Out;
@@ -26,12 +27,16 @@ template <class returnType>
 returnType CInterface::PromtWithMessage(const std::string& message) const {
   returnType res;
   m_Out << message << std::endl;
-  res << m_In;
+  while (!(m_In >> res) && !m_In.eof()) {
+    Message("Wrong input, enter again🙄");
+    m_In.clear();  // clear input
+    m_In.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
   return res;
 }
 template <class T>
-std::ostream& CInterface::Print(const T toPrint) {
-  m_Out << toPrint;
+std::ostream& CInterface::Print(const T& toPrint) {
+  m_Out << toPrint << std::endl;
   return m_Out;
 }
-void CInterface::Message(const std::string& message) const { m_Out << message; }
+void CInterface::Message(const std::string& message) const { m_Out << message << std::endl; }

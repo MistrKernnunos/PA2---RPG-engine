@@ -189,20 +189,25 @@ bool CRoom::loadDoors(CFileLoaderIt iterator) {
   iterator.Next();
   // load doors
   for (; iterator.Valid(); iterator.Next(), iterator.Next()) {
-    auto prop = iterator.GetProperties();
-    int destRoom = 0;
-    if (prop.front().first == "IDroom") {
-      destRoom = std::stoi(prop.front().second);
-    }
-    iterator.Child();  // move to first coordinate
-    iterator.Next();
-    CCordinates coor;
-    if (!coor.Load(iterator)) return false;
-    iterator.Parent();  // return to door level
-#ifdef DEBUG
-    std::cout << coor.X() << " " << coor.Y() << std::endl;
-#endif
-    m_Doors.push_back(std::make_unique<CDoor>(coor, destRoom));
+    m_Doors.push_back(std::make_unique<CDoor>(CDoor::LoadDoor(iterator)));
   }
   return true;
+}
+std::ostream& operator<<(std::ostream& os, const CRoom& room) {
+  std::vector<std::vector<std::string>> outputBuffer;
+
+  for (auto& elem : room.perimeterWalls) {
+    elem->Print(outputBuffer, "\33[47m \33[0m");
+  }
+
+  for (auto& elem : room.innerWalls) {
+    elem->Print(outputBuffer, "\33[47m \33[0m");
+  }
+  for (auto& elem : outputBuffer) {
+    for (auto& elemInner : elem) {
+      os << elemInner;
+    }
+    os << std::endl;
+  }
+  return os;
 }
