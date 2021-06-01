@@ -4,6 +4,7 @@
 
 #pragma once
 #include <memory>
+#include <ostream>
 #include <vector>
 
 //#include "CEntity.h"
@@ -11,6 +12,7 @@
 //#include "CGame.h"
 //#include "CInterface.h"
 #include "CDoor.h"
+#include "CEntityLoader.h"
 #include "CWall.h"
 #include "EMapElem.h"
 
@@ -53,11 +55,13 @@ class CRoom {
 
   //  bool MoveEntity();
 
+  friend std::ostream& operator<<(std::ostream& os, const CRoom& room);
+
  private:
   // map of the room
   std::vector<std::vector<EMapElem>> m_Map;
   // entities present in the room and their coordinates
-  //  std::vector<std::tuple<std::unique_ptr<CEntity>, int, int>> m_Entities;
+  std::vector<std::shared_ptr<CEntity>> m_Entities;
   // index is door which this connection belong to,
   // pointer to room which connect and door number
   std::vector<std::unique_ptr<CDoor>> m_Doors;
@@ -80,13 +84,6 @@ class CRoom {
    */
   bool loadInner(CFileLoaderIt iterator);
   /**
-   * loads single wall from xml tree
-   * throws exception if coordinate is not valid or the wall is not straight
-   * @param iterator pointing to wall node
-   * @return wall which it loaded
-   */
-  CWall loadWall(CFileLoaderIt iterator);
-  /**
    * checks perimeter walls if they create single shape
    * @return returns true if the the walls create single shape
    */
@@ -100,7 +97,15 @@ class CRoom {
 };
 
 bool CRoom::Load(CFileLoaderIt iterator) {
+  if (iterator.GetName() != "room") {
+    throw std::invalid_argument("wrong node");
+    return false;
+  }
   auto prop = iterator.GetProperties();  // get properties of room (name and ID)
+  if (prop.empty()) {
+    throw std::invalid_argument("no property in room node");
+    return false;
+  }
   if (prop.front().first == "ID") {
     m_ID = std::stoi(prop.front().second);
   }
@@ -122,6 +127,10 @@ bool CRoom::Load(CFileLoaderIt iterator) {
   if (!iterator.Next()) return false;          // move to text node
   if (!iterator.Next()) return false;          // move to doors node
   if (!loadDoors(iterator)) return false;      // load doors
+  CEntityLoader entityLoader;
+  if (!iterator.Next()) return false;  // move to text node
+  if (!iterator.Next()) return false;  // move to doors node
+  m_Entities = entityLoader.LoadEntities(iterator);
   return true;
 }
 
@@ -132,8 +141,11 @@ bool CRoom::loadPerimeter(CFileLoaderIt iterator) {
   }
   if (!iterator.Child()) return false;  // move to text node
   if (!iterator.Next()) return false;   // move to first wall node
+#ifdef DEBUG
+  std::cout << "perimeter" << std::endl;
+#endif
   for (; iterator.Valid(); iterator.Next(), iterator.Next()) {
-    perimeterWalls.push_back(std::make_unique<CWall>(loadWall(iterator)));
+    perimeterWalls.push_back(std::make_unique<CWall>(CWall::LoadWall(iterator)));
   }
   return true;
 }
@@ -144,32 +156,13 @@ bool CRoom::loadInner(CFileLoaderIt iterator) {
   }
   if (!iterator.Child()) return false;  // move to text node
   if (!iterator.Next()) return false;   // move to first wall node
+#ifdef DEBUG
+  std::cout << "inner" << std::endl;
+#endif
   for (; iterator.Valid(); iterator.Next(), iterator.Next()) {
-    perimeterWalls.push_back(std::make_unique<CWall>(loadWall(iterator)));
+    innerWalls.push_back(std::make_unique<CWall>(CWall::LoadWall(iterator)));
   }
   return true;
-}
-
-CWall CRoom::loadWall(CFileLoaderIt iterator) {
-  if (iterator.GetName() != "wall") {
-    throw std::invalid_argument("wrong node");
-  }
-  iterator.Child();
-  iterator.Next();
-  int coordinates[4];
-  for (size_t i = 0; i < 4; ++i, iterator.Next(), iterator.Next()) {
-    coordinates[i] = std::stoi(iterator.GetContent());
-  }
-  if (coordinates[0] != coordinates[2] && coordinates[1] != coordinates[3]) {
-    throw std::invalid_argument("wall is not straight");
-  }
-#ifdef DEBUG
-  for (int elem : coordinates) {
-    std::cout << elem << " ";
-  }
-  std::cout << std::endl;
-#endif
-  return CWall(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
 }
 
 bool CRoom::checkPerimeter() {

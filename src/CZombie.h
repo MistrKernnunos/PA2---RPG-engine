@@ -10,17 +10,12 @@
 
 class CZombie : public CMovable {
  public:
-  CZombie(const string& name, int height, int width, size_t invSize,
-           int maxHealth,  int nextLevCoef = 5,
-           int defence = 1,  int attack = 2,
-           int movement = 3)
-      : CMovable(name, height, width, invSize, maxHealth, nextLevCoef, defence,
-                 attack, movement) {}
+  CZombie() = default;
 
   /**
    * executes one turn
    */
-  virtual void Turn(CGame& game);
+  //  virtual void Turn(CGame& game);
 
   /**
    * Facilitates attack action
@@ -41,21 +36,110 @@ class CZombie : public CMovable {
    * @return the damage that has the entity received
    */
   int Attacked(const int attackDamage);
+  /**
+   * loads stats and inventory from file
+   * @param it iterator to entity node
+   * @return true if successfully loaded otherwise null
+   */
+  bool Load(CFileLoaderIt it);
+
+  /**
+   *moves entity by x and y
+   * @param x
+   * @param y
+   * @return
+   */
+  bool move(const int x, const int y);
+
+  static std::shared_ptr<CEntity> Create();
+
+ private:
+  bool loadProperties(CFileLoaderIt iterator);
+  static std::string loadProperty(CFileLoaderIt& iterator, const std::string& nodeName);
 };
-void CZombie::Turn(CGame& game) {
-  std::pair<int, int> pos = game.GetPosition(*this);
-  std::shared_ptr<CEntity> closest =
-      game.GetClosesEntityTo(pos.first, pos.second);
-  Attack(closest);
-}
+std::shared_ptr<CEntity> CZombie::Create() { return std::make_shared<CZombie>(); }
+
+// void CZombie::Turn(CGame& game) {}
 
 bool CZombie::Attack(const CEntity& toAttack) {
-  int attPower = GetAttackPower();
-  return toAttack.Attacked(attPower);
+  return true;
+  // todo
 }
 
 int CZombie::Attacked(const int attackDamage) {
-   int health = GetHealth() - attackDamage + GetDefensePower();
-  SetHealth(health);
-  return health;
+  return m_Health;
+  // todo
+}
+bool CZombie::Defense() {
+  return false;
+  // todo
+}
+bool CZombie::move(const int x, const int y) {
+  return false;
+  // todo
+}
+
+bool CZombie::Load(CFileLoaderIt iterator) {
+  if (iterator.GetName() != "entity") {
+    throw std::invalid_argument("wrong entity node");
+    return false;
+  }
+  iterator.Child();
+  iterator.Next();
+  if (!loadProperties(iterator)) return false;
+  iterator.Next();
+  iterator.Next();
+  if (!(m_Coordinates.Load(iterator))) return false;
+  iterator.Next();
+  iterator.Next();
+  if (!(m_Inventory.Load(iterator))) return false;
+  return true;
+}
+
+bool CZombie::loadProperties(CFileLoaderIt iterator) {
+  if (iterator.GetName() != "properties") {
+    throw std::invalid_argument("wrong property node");
+    return false;
+  }
+  // todo misto loadProperty pouzit it.getContent(nodename)
+  iterator.Child();
+  iterator.Next();
+  m_Name = loadProperty(iterator, "name");
+  iterator.Next();
+  iterator.Next();
+  m_MaxHealth = std::stoi(loadProperty(iterator, "maxHealth"));
+  iterator.Next();
+  iterator.Next();
+  m_Health = std::stoi(loadProperty(iterator, "health"));
+  iterator.Next();
+  iterator.Next();
+  m_AttackPower = std::stoi(loadProperty(iterator, "attack"));
+  iterator.Next();
+  iterator.Next();
+  m_DefencePower = std::stoi(loadProperty(iterator, "defense"));
+  iterator.Next();
+  iterator.Next();
+  m_ActionPoints = std::stoi(loadProperty(iterator, "actionPoints"));
+  iterator.Next();
+  iterator.Next();
+  m_XP = std::stoi(loadProperty(iterator, "xp"));
+  iterator.Next();
+  iterator.Next();
+  m_Level = std::stoi(loadProperty(iterator, "level"));
+  iterator.Next();
+  iterator.Next();
+  m_Movement = std::stoi(loadProperty(iterator, "movement"));
+  iterator.Next();
+  iterator.Next();
+  m_NextLevelCoef = std::stoi(loadProperty(iterator, "levelCoef"));
+  return true;
+}
+std::string CZombie::loadProperty(CFileLoaderIt& iterator, const std::string& nodeName) {
+  std::string res;
+  if (iterator.GetName() != nodeName) {
+    throw std::invalid_argument("wrong property name name");
+    return res;
+  }
+  res = iterator.GetContent();
+  return res;
 }

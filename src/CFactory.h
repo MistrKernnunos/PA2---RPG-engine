@@ -7,10 +7,8 @@
 #include <memory>
 #include <string>
 
-#include "CEntity.h"
-
-template <class absClass, typename identifier, typename retType = std::shared_ptr<absClass>(),
-          class maker = std::function<std::shared_ptr<absClass>(void)>>
+template <class absClass, typename identifier, class retType = std::shared_ptr<absClass>,
+          class maker = std::function<retType(void)>>
 class CFactory {
  public:
   CFactory() = default;
@@ -18,7 +16,7 @@ class CFactory {
 
   bool UnRegister(const identifier& id);
 
-  std::shared_ptr<CEntity> createObject(const identifier& id);
+  retType createObject(const identifier& id);
 
  private:
   std::map<identifier, maker> m_IdClassCreator;
@@ -33,13 +31,13 @@ bool CFactory<absClass, identifier, retType, maker>::UnRegister(const identifier
   return m_IdClassCreator.erase(id) == 1;
 }
 template <class absClass, typename identifier, typename retType, class maker>
-std::shared_ptr<CEntity> CFactory<absClass, identifier, retType, maker>::createObject(const identifier& id) {
+retType CFactory<absClass, identifier, retType, maker>::createObject(const identifier& id) {
   auto found = m_IdClassCreator.find(id);
   if (found == m_IdClassCreator.end()) {
+    throw std::invalid_argument("wrong entity type");
     return nullptr;
   }
-  auto creator = found->second;
-  auto res = creator();
+  maker creator = found->second;
+  retType res = creator();
   return res;
 }
-
