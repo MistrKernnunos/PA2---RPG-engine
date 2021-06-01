@@ -7,14 +7,17 @@
 #include <libxml/tree.h>
 
 #include <list>
+#include <stdexcept>
+#include <string>
 
 class CFileLoaderIt {
  public:
   CFileLoaderIt(xmlNode* ptr, xmlDocPtr doc) : curr(ptr), doc(doc){};
   CFileLoaderIt(const CFileLoaderIt& other) : curr(other.curr), prev(other.prev), doc(other.doc){};
-  const CFileLoaderIt& operator=(const CFileLoaderIt& other);
+  CFileLoaderIt& operator=(const CFileLoaderIt& other);
   bool operator==(const CFileLoaderIt& lval) const;
   bool Next() const;
+  bool Next(size_t cnt) const;
   bool Parent() const;
   bool Child() const;
   bool Prev() const;
@@ -25,6 +28,7 @@ class CFileLoaderIt {
   std::list<std::pair<std::string, std::string>> GetProperties() const;
   std::string GetName() const;
   std::string GetContent() const;
+  std::string GetContent(const std::string& nodeName) const;
 
  private:
   void print(xmlNode* node) const;
@@ -33,7 +37,6 @@ class CFileLoaderIt {
   mutable xmlNode* prev = nullptr;
   xmlDocPtr doc = nullptr;
 };
-
 bool CFileLoaderIt::Next() const {
   prev = curr;
   if (curr) {
@@ -64,7 +67,8 @@ bool CFileLoaderIt::Prev() const {
 }
 
 std::string CFileLoaderIt::GetName() const {
-  if (!doc) {
+  if (!curr) {
+    throw std::invalid_argument("node is null");
     return "";
   }
   std::string name((const char*)curr->name);
@@ -73,16 +77,19 @@ std::string CFileLoaderIt::GetName() const {
 std::list<std::pair<std::string, std::string>> CFileLoaderIt::GetProperties() const {
   std::list<std::pair<std::string, std::string>> res;
   if (!curr) {
+    throw std::invalid_argument("node is null");
     return res;
   }
   for (xmlAttr* attribute = curr->properties; attribute; attribute = attribute->next) {
-    res.emplace_back(std::string((const char*)attribute->name),
-                     std::string((const char*)xmlGetProp(curr, attribute->name)));
+    xmlChar* prop = xmlGetProp(curr, attribute->name);
+    res.emplace_back(std::string((const char*)attribute->name), std::string((const char*)prop));
+    xmlFree(prop);
   }
   return res;
 }
 std::string CFileLoaderIt::GetContent() const {
-  if (!doc) {
+  if (!curr) {
+    throw std::invalid_argument("node is null");
     return "";
   }
   xmlChar* content = xmlNodeListGetString(doc, curr->children, 1);
@@ -91,9 +98,9 @@ std::string CFileLoaderIt::GetContent() const {
   return res;
 }
 
-const CFileLoaderIt& CFileLoaderIt::operator=(const CFileLoaderIt& other) {
+CFileLoaderIt& CFileLoaderIt::operator=(const CFileLoaderIt& other) {
   if (*this == other) {
-    return other;
+    return *this;
   }
   curr = other.curr;
   prev = other.prev;
@@ -123,4 +130,21 @@ void CFileLoaderIt::print(xmlNode* node) const {
     }
     print(cur_node->children);
   }
+}
+std::string CFileLoaderIt::GetContent(const std::string& nodeName) const {
+  std::string res;
+  if (GetName() != nodeName) {
+    throw std::invalid_argument("wrong property name name");
+    return res;
+  }
+  res = GetContent();
+  return res;
+}
+bool CFileLoaderIt::Next(size_t cnt) const {
+  for (size_t i = 0; i < cnt; ++i) {
+    if (!Next()) {
+      return false;
+    }
+  }
+  return true;
 }
