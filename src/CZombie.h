@@ -48,13 +48,12 @@ class CZombie : public CEntity {
    * @param y
    * @return
    */
-  bool move(const int x, const int y);
+  //  bool Move(const int x, const int y, CGame& game);
 
   static std::shared_ptr<CEntity> Create();
 
  private:
   bool loadProperties(CFileLoaderIt iterator);
-  static std::string loadProperty(CFileLoaderIt& iterator, const std::string& nodeName);
 };
 std::shared_ptr<CEntity> CZombie::Create() { return std::make_shared<CZombie>(); }
 
@@ -103,42 +102,24 @@ bool CZombie::loadProperties(CFileLoaderIt iterator) {
   // todo misto loadProperty pouzit it.getContent(nodename)
   iterator.Child();
   iterator.Next();
-  m_Name = loadProperty(iterator, "name");
-  iterator.Next();
-  iterator.Next();
-  m_MaxHealth = std::stoi(loadProperty(iterator, "maxHealth"));
-  iterator.Next();
-  iterator.Next();
-  m_Health = std::stoi(loadProperty(iterator, "health"));
-  iterator.Next();
-  iterator.Next();
-  m_AttackPower = std::stoi(loadProperty(iterator, "attack"));
-  iterator.Next();
-  iterator.Next();
-  m_DefencePower = std::stoi(loadProperty(iterator, "defense"));
-  iterator.Next();
-  iterator.Next();
-  m_ActionPoints = std::stoi(loadProperty(iterator, "actionPoints"));
-  iterator.Next();
-  iterator.Next();
-  m_XP = std::stoi(loadProperty(iterator, "xp"));
-  iterator.Next();
-  iterator.Next();
-  m_Level = std::stoi(loadProperty(iterator, "level"));
-  iterator.Next();
-  iterator.Next();
-  m_Movement = std::stoi(loadProperty(iterator, "movement"));
-  iterator.Next();
-  iterator.Next();
-  m_NextLevelCoef = std::stoi(loadProperty(iterator, "levelCoef"));
+  m_Name = iterator.GetContent("name");
+  iterator.Next(2);
+  m_MaxHealth = std::stoi(iterator.GetContent("maxHealth"));
+  iterator.Next(2);
+  m_Health = std::stoi(iterator.GetContent("health"));
+  iterator.Next(2);
+  m_AttackPower = std::stoi(iterator.GetContent("attack"));
+  iterator.Next(2);
+  m_DefencePower = std::stoi(iterator.GetContent("defense"));
+  iterator.Next(2);
+  m_ActionPoints = std::stoi(iterator.GetContent("actionPoints"));
+  iterator.Next(2);
+  m_XP = std::stoi(iterator.GetContent("xp"));
+  iterator.Next(2);
+  m_Level = std::stoi(iterator.GetContent("level"));
+  iterator.Next(2);
+  m_Movement = std::stoi(iterator.GetContent("movement"));
+  iterator.Next(2);
+  m_NextLevelCoef = std::stoi(iterator.GetContent("levelCoef"));
   return true;
-}
-std::string CZombie::loadProperty(CFileLoaderIt& iterator, const std::string& nodeName) {
-  std::string res;
-  if (iterator.GetName() != nodeName) {
-    throw std::invalid_argument("wrong property name name");
-    return res;
-  }
-  res = iterator.GetContent();
-  return res;
 }
