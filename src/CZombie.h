@@ -5,10 +5,9 @@
 #include <memory>
 
 #include "CEntity.h"
-#include "CGame.h"
-#include "CMovable.h"
+//#include "CGame.h"
 
-class CZombie : public CMovable {
+class CZombie : public CEntity {
  public:
   CZombie() = default;
 
