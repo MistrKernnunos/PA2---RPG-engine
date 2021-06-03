@@ -6,7 +6,6 @@
 #include <memory>
 #include <string>
 
-#include "CEntity.h"
 #include "CFileLoaderIterator.h"
 
 class CItem {
@@ -24,10 +23,7 @@ class CItem {
 
   virtual bool Load(CFileLoaderIt iterator) = 0;
 
-  friend std::ostream& operator<<(std::ostream& os, const CItem& item) {
-    item.print(os);
-    return os;
-  }
+  friend std::ostream& operator<<(std::ostream& os, const CItem& item);
 
  private:
   virtual std::ostream& print(std::ostream& out) const = 0;

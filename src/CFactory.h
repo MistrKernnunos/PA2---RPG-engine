@@ -6,6 +6,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 template <class absClass, typename identifier, class retType = std::shared_ptr<absClass>,
           class maker = std::function<retType(void)>>

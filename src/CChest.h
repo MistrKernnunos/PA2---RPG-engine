@@ -3,7 +3,6 @@
 //
 #pragma once
 #include "CEntity.h"
-#include "CGame.h"
 
 class CChest : public CEntity {
   CChest(const string& name = "chest", int height = 2, int width = 2,
@@ -15,7 +14,7 @@ class CChest : public CEntity {
   /**
    * executes one turn
    */
-  virtual void Turn(CGame &game);
+  virtual void Turn();
 
   /**
    * Facilitates attack action

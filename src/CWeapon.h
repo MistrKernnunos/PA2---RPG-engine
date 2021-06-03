@@ -1,6 +1,7 @@
 //
 // Created by machavi on 5/7/21.
 //
+#pragma once
 #include <memory>
 
 #include "CItem.h"

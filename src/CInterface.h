@@ -11,6 +11,7 @@
 class CInterface {
  public:
   CInterface(std::ostream& out, std::istream& in) : m_Out(out), m_In(in) {}
+
   template <class returnType>
   returnType PromtWithMessage(const std::string& message) const;
 
@@ -39,4 +40,3 @@ std::ostream& CInterface::Print(const T& toPrint) {
   m_Out << toPrint << std::endl;
   return m_Out;
 }
-void CInterface::Message(const std::string& message) const { m_Out << message << std::endl; }

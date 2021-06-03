@@ -1,23 +1,18 @@
 //
-// Created by machavi on 5/9/21.
+// Created by machavi on 6/2/21.
 //
-
 #pragma once
+#include "CEntity.h"
 #include "CGame.h"
-#include "CMovable.h"
 
 class CPlayer : public CEntity {
  public:
-  CPlayer(const string& name, int height, int width, size_t invSize,
-           int maxHealth,  int nextLevCoef = 5,
-           int defence,  int attack)
-      : CEntity(name, height, width, invSize, maxHealth, nextLevCoef, defence,
-                attack) {}
+  CPlayer() = default;
 
   /**
    * executes one turn
    */
-  virtual void Turn(CGame& game);
+  void Turn() override;
 
   /**
    * Facilitates attack action
@@ -25,17 +20,21 @@ class CPlayer : public CEntity {
    * @return true if the attack was successful, false if not (not enough action
    * points, target too far, etc.)
    */
-  bool Attack(const CEntity& toAttack);
+  bool Attack(const CEntity& toAttack) override;
 
   /**
    * entity takes enters defense state until start of next turn
    * @return true if successful, false if not (not enough action points)
    */
-  bool Defense();
+  bool Defense() override;
   /**
    * handles action if the entity is attacked
    * @param attackPower attack damage of the incoming attack
    * @return the damage that has the entity received
    */
-  int Attacked(const int attackDamage);
+  int Attacked(const int attackDamage) override;
+
+  bool Move(const int x, const int y) override;
+  bool RecieveMessage(const CMessage& message) override;
+  static std::shared_ptr<CEntity> Create();
 };

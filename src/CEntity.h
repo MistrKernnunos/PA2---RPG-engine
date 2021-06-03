@@ -3,15 +3,18 @@
 // Created by machavi on 5/7/21.
 //
 #pragma once
+#include <ostream>
 #include <string>
 #include <utility>
 #include <vector>
 
+#include "CControler.h"
 #include "CCoordinates.h"
+#include "CFileLoaderIterator.h"
 #include "CGame.h"
 #include "CInventory.h"
-//#include "CItem.h"
-#include "CRoom.h"
+#include "CMessage.h"
+class CRoom;
 class CEntity {
  public:
   /**
@@ -19,10 +22,11 @@ class CEntity {
    * @param name name of the entity
    */
   CEntity() = default;
+  virtual ~CEntity() = default;
   /**
    * executes one turn
    */
-  //    virtual void Turn(CGame& game) = 0;
+  virtual void Turn() = 0;
 
   /**
    * Facilitates attack action
@@ -49,7 +53,21 @@ class CEntity {
    * @param it iterator to entity node
    * @return true if successfully loaded otherwise null
    */
-  virtual bool Load(CFileLoaderIt it) = 0;
+  bool Load(CFileLoaderIt it);
+
+  /**
+   *moves entity by x and y
+   * @param x
+   * @param y
+   * @return
+   */
+  virtual bool Move(const int x, const int y) = 0;
+
+  void AttachController(std::shared_ptr<CControler> controler);
+
+  virtual bool RecieveMessage(const CMessage& message) = 0;
+
+  std::vector<std::shared_ptr<CEntity>> getEntitiesInRange(int range) const;
 
   const std::string& GetName() const;
   size_t GetHeight() const;
@@ -61,13 +79,20 @@ class CEntity {
   int GetActionPoints() const;
   int GetXp() const;
   int GetLevel() const;
-  const CCordinates& GetCoordinates() const;
+  const CCoordinates& GetCoordinates() const;
 
-  //  bool InsertIntoRomm(std::shared_ptr<CRoom> room);
+  bool InsertIntoRoom(std::weak_ptr<CRoom> room);
 
   //  CInventory& GetInventory();
 
   //  const CInventory& GetInventory() const;
+
+  void PrintToBuffer(std::vector<std::vector<std::string>>& outputBuffer);
+
+  friend std::ostream& operator<<(std::ostream& os, const CEntity& entity);
+
+ private:
+  bool loadProperties(CFileLoaderIt iterator);
 
  protected:
   // information about the entity
@@ -76,6 +101,7 @@ class CEntity {
   size_t m_Width = 1;
   int m_MaxHealth = 0;
   int m_NextLevelCoef = 5;
+  int m_Movement = 0;
 
   // current stats of the entity
   int m_Health = 0;
@@ -84,24 +110,10 @@ class CEntity {
   int m_ActionPoints = 0;
   int m_XP = 0;
   int m_Level = 1;
+  std::shared_ptr<CControler> m_Controller;
 
-  CCordinates m_Coordinates;
-  //  std::shared_ptr<CRoom> m_CurrRoom;
+  std::weak_ptr<CRoom> m_Room;
+  CCoordinates m_Coordinates;
   CInventory m_Inventory;
+  static std::string m_Apperance;
 };
-
-const std::string& CEntity::GetName() const { return m_Name; }
-size_t CEntity::GetHeight() const { return m_Height; }
-size_t CEntity::GetWidth() const { return m_Width; }
-int CEntity::GetMaxHealth() const { return m_MaxHealth; }
-int CEntity::GetHealth() const { return m_Health; }
-int CEntity::GetDefencePower() const { return m_DefencePower; }
-int CEntity::GetAttackPower() const { return m_AttackPower; }
-int CEntity::GetActionPoints() const { return m_ActionPoints; }
-int CEntity::GetXp() const { return m_XP; }
-int CEntity::GetLevel() const { return m_Level; }
-const CCordinates& CEntity::GetCoordinates() const { return m_Coordinates; }
-// const CInventory& CEntity::GetInventory() const { return m_Inventory; }
-// CInventory& CEntity::GetInventory() { return m_Inventory; }
-
-// bool CEntity::InsertIntoRomm(std::shared_ptr<CRoom> room) { return false; }
