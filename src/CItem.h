@@ -28,6 +28,10 @@ class CItem {
  private:
   virtual std::ostream& print(std::ostream& out) const = 0;
 
+ public:
+  const std::string& GetName() const;
+  size_t GetSize() const;
+
  protected:
   std::string m_Name;
   size_t m_Size = 0;

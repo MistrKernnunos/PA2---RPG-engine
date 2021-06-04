@@ -8,6 +8,7 @@ bool CFileLoaderIt::Next() const {
   if (curr) {
     curr = curr->next;
   }
+
   return curr;
 }
 bool CFileLoaderIt::Child() const {

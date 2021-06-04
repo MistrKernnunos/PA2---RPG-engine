@@ -2,6 +2,7 @@
 // Created by machavi on 6/1/21.
 //
 #include "CItemLoader.h"
+
 #include "CHealthPotion.h"
 CItemLoader::CItemLoader() { m_ItemFactory.Register("healthPotion", CHealthPotion::Create); }
 
@@ -26,7 +27,11 @@ std::vector<std::unique_ptr<CItem>> CItemLoader::LoadItems(CFileLoaderIt iterato
       items.erase(--end);
       return items;
     }
-    items.back()->Load(iterator);
+    if (!items.back()->Load(iterator)) {
+      items.erase(items.end() - 1);
+      throw std::invalid_argument("error during item loading");
+      return items;
+    }
 
 #ifdef DEBUG
     std::cout << *(items.back());

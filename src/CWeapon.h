@@ -3,19 +3,14 @@
 //
 #pragma once
 #include <memory>
+#include <ostream>
 
-#include "CItem.h"
+#include "CFileLoaderIterator.h"
+class CEntity;
 
-#pragma once
-
-class CWeapon : public CItem {
+class CWeapon {
  public:
-  CWeapon(const string &name, const size_t size, unsigned int range,
-          unsigned int attackPower, unsigned int defensePower)
-      : CItem(name, size),
-        m_Range(range),
-        m_AttackPower(attackPower),
-        m_DefensePower(defensePower) {}
+  CWeapon() = default;
 
   /**
    * applies defensive action of the weapon
@@ -31,8 +26,7 @@ class CWeapon : public CItem {
    * @param user entity which uses this item
    * @return if the effect was used successfully
    */
-  virtual bool Effect(std::shared_ptr<CEntity> toEffect,
-                      std::shared_ptr<CEntity> user) = 0;
+  virtual bool Effect(std::shared_ptr<CEntity> toEffect, std::shared_ptr<CEntity> user) = 0;
 
   /**
    * performs attack with this weapon
@@ -40,11 +34,22 @@ class CWeapon : public CItem {
    * @param user entity which uses this weapon
    * @return true if the attack was used successfully
    */
-  virtual bool Attack(std::shared_ptr<CEntity> toAttack,
-                      std::shared_ptr<CEntity> user) = 0;
+  virtual bool Attack(std::shared_ptr<CEntity> toAttack, std::shared_ptr<CEntity> user) = 0;
+
+  bool Load(CFileLoaderIt it);
+
+  friend std::ostream& operator<<(std::ostream& os, const CWeapon& weapon);
+
+  const std::string& GetName() const;
+  int GetRange() const;
+  int GetAttackPower() const;
+  int GetDefensePower() const;
+  size_t GetSize() const;
 
  private:
-  unsigned int m_Range;
-  unsigned int m_AttackPower;
-  unsigned int m_DefensePower;
+  std::string m_Name;
+  int m_Range = 0;
+  int m_AttackPower = 0;
+  int m_DefensePower = 0;
+  size_t m_Size = 0;
 };

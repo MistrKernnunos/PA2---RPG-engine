@@ -8,8 +8,9 @@
 
 #include "CFileLoaderIterator.h"
 #include "CItem.h"
-#include "CItemLoader.h"
+#include "CWeapon.h"
 
+enum invType { WEAPON, ITEM };
 class CInventory {
  public:
   CInventory() = default;
@@ -22,20 +23,24 @@ class CInventory {
    * @param index index of the item in the vector
    * @return true if the transfer succeeded, false if the item is too big
    */
-  bool insert(CInventory& from, size_t index);
+  bool insert(CInventory& from, size_t index, invType type);
 
   /**
    * removes the item from inventory
    * @param index index of the item in the vector
    * @return
    */
-  bool drop(size_t index);
+  bool drop(size_t index, invType type);
 
   /**
    * returns reference to the inventory array
    * @return const reference to inventory array
    */
-  const std::vector<std::unique_ptr<CItem>>& getInventory();
+  const std::vector<std::unique_ptr<CItem>>& GetItemInventory() const;
+  const std::vector<std::unique_ptr<CWeapon>>& GetWeaponInventory() const;
+
+  std::unique_ptr<CItem> GetItem(size_t index);
+  std::unique_ptr<CWeapon> GetWeapon(size_t index);
 
   /**
    * loads inventory from xml file
@@ -46,5 +51,7 @@ class CInventory {
 
  private:
   size_t m_Size = 0;
+  size_t m_CurrSize = 0;
   std::vector<std::unique_ptr<CItem>> m_Inventory;
+  std::vector<std::unique_ptr<CWeapon>> m_WeaponInventory;
 };
