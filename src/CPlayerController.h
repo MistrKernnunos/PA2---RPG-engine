@@ -17,5 +17,7 @@ class CPlayerController : public CControler {
   void AttachToEntity(std::weak_ptr<CEntity> entity) override;
 
  private:
-  int showPosibilities();
+  int showPosibilities(CEntity& toControl);
+  bool move(CEntity& toControl);
+  bool attack(CEntity& toControl);
 };

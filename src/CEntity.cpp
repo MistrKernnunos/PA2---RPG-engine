@@ -1,8 +1,7 @@
 //
 // Created by machavi on 6/2/21.
 //
-#include "CEntity.h"
-
+#include "CInventory.h"
 #include "CRoom.h"
 std::string CEntity::m_Apperance = "\33[105m*\33[0m";
 
@@ -68,6 +67,12 @@ bool CEntity::loadProperties(CFileLoaderIt iterator) {
   m_Movement = std::stoi(iterator.GetContent("movement"));
   iterator.Next(2);
   m_NextLevelCoef = std::stoi(iterator.GetContent("levelCoef"));
+  iterator.Next(2);
+  m_MovementCost = std::stoi(iterator.GetContent("movementCost"));
+  iterator.Next(2);
+  m_AttackCost = std::stoi(iterator.GetContent("attackCost"));
+  iterator.Next(2);
+  m_DefenseConst = std::stoi(iterator.GetContent("defenseCost"));
   return true;
 }
 void CEntity::AttachController(std::shared_ptr<CControler> controler) { m_Controller = controler; }
@@ -80,3 +85,7 @@ std::ostream& operator<<(std::ostream& os, const CEntity& entity) {
   os << "m_Name: " << entity.m_Name;
   return os;
 }
+int CEntity::GetMovementCost() const { return m_MovementCost; }
+int CEntity::GetAttackCost() const { return m_AttackCost; }
+int CEntity::GetDefenseConst() const { return m_DefenseConst; }
+int CEntity::GetCurrActionPoints() const { return m_CurrActionPoints; }

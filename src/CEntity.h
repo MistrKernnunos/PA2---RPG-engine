@@ -80,7 +80,10 @@ class CEntity {
   int GetXp() const;
   int GetLevel() const;
   const CCoordinates& GetCoordinates() const;
-
+  int GetMovementCost() const;
+  int GetCurrActionPoints() const;
+  int GetAttackCost() const;
+  int GetDefenseConst() const;
   bool InsertIntoRoom(std::weak_ptr<CRoom> room);
 
   //  CInventory& GetInventory();
@@ -102,12 +105,16 @@ class CEntity {
   int m_MaxHealth = 0;
   int m_NextLevelCoef = 5;
   int m_Movement = 0;
+  int m_MovementCost = 0;
+  int m_AttackCost = 0;
+  int m_DefenseConst = 0;
+  int m_ActionPoints = 0;
 
   // current stats of the entity
   int m_Health = 0;
   int m_DefencePower = 0;
   int m_AttackPower = 0;
-  int m_ActionPoints = 0;
+  int m_CurrActionPoints = 0;
   int m_XP = 0;
   int m_Level = 1;
   std::shared_ptr<CControler> m_Controller;
