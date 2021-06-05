@@ -1,7 +1,7 @@
 //
 // Created by machavi on 5/7/21.
 //
-
+#define LOOT_RANGE 5
 #include "CRoom.h"
 
 #include <queue>
@@ -212,7 +212,7 @@ void CRoom::exportToMap() {
     m_Map.at(coordinate.Y()).at(coordinate.X()) = EMapElem::ENTITY;
   }
 }
-std::vector<std::shared_ptr<CEntity>> CRoom::PossibleToAttack(const CCoordinates& pos, int range) const {
+std::vector<std::shared_ptr<CEntity>> CRoom::EntitiesInRange(const CCoordinates& pos, int range) const {
   std::vector<std::shared_ptr<CEntity>> res;
   std::vector<CCoordinates> resCoordinates;
   // CCordinates and range from start pos

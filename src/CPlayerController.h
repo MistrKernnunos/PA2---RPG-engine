@@ -3,9 +3,11 @@
 //
 #pragma once
 #include <memory>
+#include <vector>
 
 #include "CControler.h"
 #include "CInterface.h"
+#include "CWeapon.h"
 class CPlayer;
 
 class CPlayerController : public CControler {
@@ -17,7 +19,9 @@ class CPlayerController : public CControler {
   void AttachToEntity(std::weak_ptr<CEntity> entity) override;
 
  private:
-  int showPosibilities(CEntity& toControl);
-  bool move(CEntity& toControl);
-  bool attack(CEntity& toControl);
+  size_t chooseEntityToAttack(CEntity& toControl, std::vector<std::shared_ptr<CEntity>>& entitiesToAttack);
+  int showActions(CEntity& toControl);
+  void move(CEntity& toControl);
+  void attack(CEntity& toControl);
+  size_t chooseWeapon(CEntity& toControl);
 };

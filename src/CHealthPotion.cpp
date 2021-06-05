@@ -24,3 +24,19 @@ std::ostream& CHealthPotion::print(std::ostream& out) const {
   out << " m_Name: " << m_Name << " m_Size: " << m_Size;
   return out;
 }
+std::string CHealthPotion::PrintToString() {
+  std::string message = "Name: ";
+  message += GetName();
+  message += "  strength: ";
+  message += std::to_string(m_HealingStrength);
+  return message;
+}
+bool CHealthPotion::Effect(std::shared_ptr<CEntity> toEffect, std::shared_ptr<CEntity> user) {
+  int health = toEffect->GetHealth();
+  health += m_HealingStrength;
+  if (health > toEffect->GetMaxHealth()) {
+    health = toEffect->GetMaxHealth();
+  }
+  toEffect->SetHealth(health);
+  return true;
+}

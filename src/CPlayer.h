@@ -20,7 +20,7 @@ class CPlayer : public CEntity {
    * @return true if the attack was successful, false if not (not enough action
    * points, target too far, etc.)
    */
-  bool Attack(const CEntity& toAttack) override;
+  bool Attack(CEntity& toAttack, const CWeapon& weapon) override;
 
   /**
    * entity takes enters defense state until start of next turn
@@ -35,6 +35,5 @@ class CPlayer : public CEntity {
   int Attacked(const int attackDamage) override;
 
   bool Move(const int x, const int y) override;
-  bool RecieveMessage(const CMessage& message) override;
   static std::shared_ptr<CEntity> Create();
 };

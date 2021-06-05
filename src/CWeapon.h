@@ -34,7 +34,7 @@ class CWeapon {
    * @param user entity which uses this weapon
    * @return true if the attack was used successfully
    */
-  virtual bool Attack(std::shared_ptr<CEntity> toAttack, std::shared_ptr<CEntity> user) = 0;
+  virtual bool Attack(CEntity& toAttack, CEntity& user) const = 0;
 
   bool Load(CFileLoaderIt it);
 

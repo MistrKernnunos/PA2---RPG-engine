@@ -1,6 +1,8 @@
 //
 // Created by machavi on 6/2/21.
 //
+#include "CEntity.h"
+
 #include "CInventory.h"
 #include "CRoom.h"
 std::string CEntity::m_Apperance = "\33[105m*\33[0m";
@@ -19,8 +21,7 @@ const CCoordinates& CEntity::GetCoordinates() const { return m_Coordinates; }
 void CEntity::PrintToBuffer(std::vector<std::vector<std::string>>& outputBuffer) {
   outputBuffer.at(m_Coordinates.Y()).at(m_Coordinates.X()) = m_Apperance;
 }
-// const CInventory& CEntity::GetInventory() const { return m_Inventory; }
-// CInventory& CEntity::GetInventory() { return m_Inventory; }
+const CInventory& CEntity::GetInventory() const { return m_Inventory; }
 
 // bool CEntity::InsertIntoRoom(std::shared_ptr<CRoom> room) { return false; }
 
@@ -79,7 +80,7 @@ void CEntity::AttachController(std::shared_ptr<CControler> controler) { m_Contro
 bool CEntity::InsertIntoRoom(std::weak_ptr<CRoom> room) { m_Room = room; }
 
 std::vector<std::shared_ptr<CEntity>> CEntity::getEntitiesInRange(int range) const {
-  return m_Room.lock()->PossibleToAttack(m_Coordinates, range);
+  return m_Room.lock()->EntitiesInRange(m_Coordinates, range);
 }
 std::ostream& operator<<(std::ostream& os, const CEntity& entity) {
   os << "m_Name: " << entity.m_Name;
@@ -89,3 +90,7 @@ int CEntity::GetMovementCost() const { return m_MovementCost; }
 int CEntity::GetAttackCost() const { return m_AttackCost; }
 int CEntity::GetDefenseConst() const { return m_DefenseConst; }
 int CEntity::GetCurrActionPoints() const { return m_CurrActionPoints; }
+state CEntity::GetState() const { return m_State; }
+
+bool CEntity::IsLootable() { return m_Lootable; }
+void CEntity::SetHealth(int mHealth) { m_Health = mHealth; }

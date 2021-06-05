@@ -7,7 +7,7 @@
 #include "CWeaponLoader.h"
 bool CInventory::insert(CInventory& from, size_t index, invType type) {
   if (type == ITEM) {
-    auto item = from.GetItem(index);
+    auto item = from.TakeItem(index);
     if (item) {
       m_Inventory.resize(m_Inventory.size() + 1);
       m_Inventory.back().swap(item);
@@ -16,7 +16,7 @@ bool CInventory::insert(CInventory& from, size_t index, invType type) {
       return false;
     }
   } else {
-    auto item = from.GetWeapon(index);
+    auto item = from.TakeWeapon(index);
     if (item) {
       m_WeaponInventory.resize(m_WeaponInventory.size() + 1);
       m_WeaponInventory.back().swap(item);
@@ -80,7 +80,7 @@ bool CInventory::Load(CFileLoaderIt it) {
   return true;
 }
 const std::vector<std::unique_ptr<CWeapon>>& CInventory::GetWeaponInventory() const { return m_WeaponInventory; }
-std::unique_ptr<CItem> CInventory::GetItem(size_t index) {
+std::unique_ptr<CItem> CInventory::TakeItem(size_t index) {
   std::unique_ptr<CItem> ptr;
   if (index < m_Inventory.size()) {
     ptr.swap(m_Inventory.at(index));
@@ -89,7 +89,7 @@ std::unique_ptr<CItem> CInventory::GetItem(size_t index) {
   }
   return ptr;
 }
-std::unique_ptr<CWeapon> CInventory::GetWeapon(size_t index) {
+std::unique_ptr<CWeapon> CInventory::TakeWeapon(size_t index) {
   std::unique_ptr<CWeapon> ptr;
   if (index < m_WeaponInventory.size()) {
     ptr.swap(m_WeaponInventory.at(index));

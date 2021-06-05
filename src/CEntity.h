@@ -1,5 +1,4 @@
 //
-//
 // Created by machavi on 5/7/21.
 //
 #pragma once
@@ -15,6 +14,9 @@
 #include "CInventory.h"
 #include "CMessage.h"
 class CRoom;
+
+enum state { DEAD, ALIVE };
+
 class CEntity {
  public:
   /**
@@ -34,7 +36,7 @@ class CEntity {
    * @return true if the attack was successful, false if not (not enough action
    * points, target too far, etc.)
    */
-  virtual bool Attack(const CEntity& toAttack) = 0;
+  virtual bool Attack(CEntity& toAttack, const CWeapon& weapon) = 0;
 
   /**
    * entity takes enters defense state until start of next turn
@@ -63,9 +65,9 @@ class CEntity {
    */
   virtual bool Move(const int x, const int y) = 0;
 
-  void AttachController(std::shared_ptr<CControler> controler);
+  bool IsLootable();
 
-  virtual bool RecieveMessage(const CMessage& message) = 0;
+  void AttachController(std::shared_ptr<CControler> controler);
 
   std::vector<std::shared_ptr<CEntity>> getEntitiesInRange(int range) const;
 
@@ -84,11 +86,12 @@ class CEntity {
   int GetCurrActionPoints() const;
   int GetAttackCost() const;
   int GetDefenseConst() const;
+  state GetState() const;
   bool InsertIntoRoom(std::weak_ptr<CRoom> room);
-
+  void SetHealth(int mHealth);
   //  CInventory& GetInventory();
 
-  //  const CInventory& GetInventory() const;
+  const CInventory& GetInventory() const;
 
   void PrintToBuffer(std::vector<std::vector<std::string>>& outputBuffer);
 
@@ -117,6 +120,9 @@ class CEntity {
   int m_CurrActionPoints = 0;
   int m_XP = 0;
   int m_Level = 1;
+  bool m_Lootable = false;
+
+  state m_State = ALIVE;
   std::shared_ptr<CControler> m_Controller;
 
   std::weak_ptr<CRoom> m_Room;

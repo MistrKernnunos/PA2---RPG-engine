@@ -59,7 +59,7 @@ class CRoom {
 
   void Render();
 
-  std::vector<std::shared_ptr<CEntity>> PossibleToAttack(const CCoordinates& pos, int range) const;
+  std::vector<std::shared_ptr<CEntity>> EntitiesInRange(const CCoordinates& pos, int range) const;
 
   EMapElem isAtPosition(const CCoordinates& pos) const;
 

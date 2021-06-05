@@ -5,12 +5,8 @@
 #include "CEntity.h"
 
 class CChest : public CEntity {
-  CChest(const string& name = "chest", int height = 2, int width = 2,
-         size_t invSize = 100,  int maxHealth = 100,
-          int nextLevCoef = 5,  int defence = 1000,
-          int attack = 0)
-      : CEntity(name, height, width, invSize, maxHealth, nextLevCoef, def,
-                attack) {}
+  CChest() : m_Lootable(true){};
+
   /**
    * executes one turn
    */
@@ -22,13 +18,13 @@ class CChest : public CEntity {
    * @return true if the attack was successful, false if not (not enough action
    * points, target too far, etc.)
    */
-  bool Attack(const CEntity& toAttack);
+  bool Attack(CEntity& toAttack, const CWeapon& weapon);
 
   /**
    * entity takes enters defense state until start of next turn
    * @return true if successful, false if not (not enough action points)
    */
-  bool Defense() = 0;
+  bool Defense() ;
   /**
    * handles action if the entity is attacked
    * @param attackPower attack damage of the incoming attack
@@ -41,8 +37,9 @@ void CChest::Turn() {
   // chest does nothing in her turn
 }
 
-bool CChest::Attack(const CEntity& toAttack) {
+bool CChest::Attack(CEntity& toAttack, const CWeapon& weapon) {
   // chest does not attack
+  return false;
 }
 int CChest::Attacked(const int attackDamage) {
   return -1  // chest cant be attacked

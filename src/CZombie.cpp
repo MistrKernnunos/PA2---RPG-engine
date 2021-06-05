@@ -8,7 +8,7 @@ std::shared_ptr<CEntity> CZombie::Create() { return std::make_shared<CZombie>();
 
 // void CZombie::Turn(CGame& game) {}
 
-bool CZombie::Attack(const CEntity& toAttack) {
+bool CZombie::Attack(CEntity& toAttack, const CWeapon& weapon) {
   return true;
   // todo
 }

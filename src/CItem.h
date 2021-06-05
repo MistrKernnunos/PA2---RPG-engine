@@ -19,18 +19,18 @@ class CItem {
    * @param user entity which uses this item
    * @return if the effect was used successfully
    */
-  //  virtual bool Effect(std::shared_ptr<CEntity> toEffect, std::shared_ptr<CEntity> user) = 0;
+    virtual bool Effect(std::shared_ptr<CEntity> toEffect, std::shared_ptr<CEntity> user) = 0;
 
   virtual bool Load(CFileLoaderIt iterator) = 0;
 
   friend std::ostream& operator<<(std::ostream& os, const CItem& item);
 
- private:
-  virtual std::ostream& print(std::ostream& out) const = 0;
-
- public:
   const std::string& GetName() const;
   size_t GetSize() const;
+
+  virtual std::string PrintToString() = 0;
+
+  virtual std::ostream& print(std::ostream& out) const = 0;
 
  protected:
   std::string m_Name;

@@ -39,8 +39,9 @@ class CInventory {
   const std::vector<std::unique_ptr<CItem>>& GetItemInventory() const;
   const std::vector<std::unique_ptr<CWeapon>>& GetWeaponInventory() const;
 
-  std::unique_ptr<CItem> GetItem(size_t index);
-  std::unique_ptr<CWeapon> GetWeapon(size_t index);
+  std::unique_ptr<CItem> TakeItem(size_t index);
+  std::unique_ptr<CWeapon> TakeWeapon(size_t index);
+
 
   /**
    * loads inventory from xml file

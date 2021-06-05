@@ -21,7 +21,7 @@ class CZombie : public CEntity {
    * @return true if the attack was successful, false if not (not enough action
    * points, target too far, etc.)
    */
-  bool Attack(const CEntity& toAttack);
+  bool Attack(CEntity& toAttack, const CWeapon& weapon);
 
   /**
    * entity takes enters defense state until start of next turn
@@ -44,7 +44,4 @@ class CZombie : public CEntity {
   bool Move(const int x, const int y);
 
   static std::shared_ptr<CEntity> Create();
-  bool RecieveMessage(const CMessage& message) override;
-
- private:
 };
