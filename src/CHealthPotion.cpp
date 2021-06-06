@@ -31,12 +31,12 @@ std::string CHealthPotion::PrintToString() {
   message += std::to_string(m_HealingStrength);
   return message;
 }
-bool CHealthPotion::Effect(std::shared_ptr<CEntity> toEffect, std::shared_ptr<CEntity> user) {
-  int health = toEffect->GetHealth();
+bool CHealthPotion::Effect(CEntity& toEffect, CEntity& user) {
+  int health = toEffect.GetHealth();
   health += m_HealingStrength;
-  if (health > toEffect->GetMaxHealth()) {
-    health = toEffect->GetMaxHealth();
+  if (health > toEffect.GetMaxHealth()) {
+    health = toEffect.GetMaxHealth();
   }
-  toEffect->SetHealth(health);
+  toEffect.SetHealth(health);
   return true;
 }

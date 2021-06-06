@@ -10,3 +10,12 @@ bool CSword::Attack(CEntity& toAttack, CEntity& user) const {
   toAttack.Attacked(damage);
 }
 std::unique_ptr<CWeapon> CSword::Create() { return std::make_unique<CSword>(); }
+std::string CSword::PrintToString() {
+  std::string message = "Name: ";
+  message += GetName();
+  message += "\n  Strength: ";
+  message += std::to_string(GetAttackPower());
+  message += "\n";
+  message += "  range: ";
+  message += std::to_string(GetRange());
+}

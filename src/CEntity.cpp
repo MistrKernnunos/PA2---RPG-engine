@@ -79,7 +79,7 @@ bool CEntity::loadProperties(CFileLoaderIt iterator) {
 void CEntity::AttachController(std::shared_ptr<CControler> controler) { m_Controller = controler; }
 bool CEntity::InsertIntoRoom(std::weak_ptr<CRoom> room) { m_Room = room; }
 
-std::vector<std::shared_ptr<CEntity>> CEntity::getEntitiesInRange(int range) const {
+std::vector<std::shared_ptr<CEntity>> CEntity::GetEntitiesInRange(int range) const {
   return m_Room.lock()->EntitiesInRange(m_Coordinates, range);
 }
 std::ostream& operator<<(std::ostream& os, const CEntity& entity) {
@@ -94,3 +94,7 @@ state CEntity::GetState() const { return m_State; }
 
 bool CEntity::IsLootable() { return m_Lootable; }
 void CEntity::SetHealth(int mHealth) { m_Health = mHealth; }
+CInventory& CEntity::GetEditableInventory() { return m_Inventory; }
+std::vector<std::shared_ptr<CEntity>> CEntity::GetLootableEntities() const {
+  return m_Room.lock()->GetLootableEntities(m_Coordinates);
+}

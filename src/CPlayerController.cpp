@@ -6,6 +6,7 @@
 
 #include "CEntity.h"
 #include "CInterfaceLocator.h"
+#include "CItem.h"
 #include "CPlayer.h"
 void CPlayerController::Control(CEntity& toControl) {
   CInterface interface = CInterfaceLocator::getInerface();
@@ -19,7 +20,7 @@ void CPlayerController::Control(CEntity& toControl) {
         attack(toControl);
         break;
       case 3:
-        // inventory
+        inventory(toControl);
         break;
       case 4:
         // loot
@@ -48,7 +49,7 @@ int CPlayerController::showActions(CEntity& toControl) {
   bool state = false;
   while (!state) {
     int res = interface.PromtWithMessage<int>(actions);
-    if (res > 0 && res <= 2) {
+    if (res > 0 && res <= 3) {
       state = true;
       return res;
     } else {
@@ -71,20 +72,14 @@ void CPlayerController::attack(CEntity& toControl) {
   const CInventory& inventory(toControl.GetInventory());
   size_t weaponIndex = chooseWeapon(toControl);
   if (weaponIndex == 0) {
-    return;
-  }
-  if (weaponIndex < 0 || weaponIndex > inventory.GetWeaponInventory().size()) {
-    interface.Message("No weapon under this number");
+    interface.Message("No weapon chosen");
     return;
   }
   weaponIndex--;
-  auto entities = toControl.getEntitiesInRange(inventory.GetWeaponInventory().at(weaponIndex)->GetRange());
+  auto entities = toControl.GetEntitiesInRange(inventory.GetWeaponInventory().at(weaponIndex)->GetRange());
   size_t entityIndex = chooseEntityToAttack(toControl, entities);
   if (entityIndex == 0) {
-    return;
-  }
-  if (entityIndex < 0 || entityIndex > entities.size()) {
-    interface.Message("No entity under this number");
+    interface.Message("No entity chosen");
     return;
   }
   entityIndex--;
@@ -114,24 +109,97 @@ size_t CPlayerController::chooseEntityToAttack(CEntity& toControl,
     message += " Y: ";
     message += std::to_string(coor.Y() - myPos.Y());
   }
-  return interface.PromtWithMessage<size_t>(message);
+  size_t res = interface.PromtWithMessage<size_t>(message);
+  if (res >= entitiesToAttack.size()) res = 0;
+  return res;
 }
-size_t CPlayerController::chooseWeapon(CEntity& toControl) {
-  const CInventory& inv(toControl.GetInventory());
-  size_t size = inv.GetWeaponInventory().size();
-  CInterface interface = CInterfaceLocator::getInerface();
-  std::string message = "Choose weapon to use\n 0) no weapon\n";
-  for (size_t i = 0; i < size; ++i) {
-    message += " ";
-    message += std::to_string(i + 1);
-    message += ") ";
-    message += inv.GetWeaponInventory().at(i)->GetName();
-    message += "\n";
-    message += "  power: ";
-    message += std::to_string(inv.GetWeaponInventory().at(i)->GetAttackPower());
-    message += "\n";
-    message += "  range: ";
-    message += std::to_string(inv.GetWeaponInventory().at(i)->GetRange());
+size_t CPlayerController::chooseWeapon(CEntity& toControl) { return chooseItem(toControl, WEAPON); }
+void CPlayerController::inventory(CEntity& toControl) {
+  size_t index = chooseItem(toControl, ITEM);
+  if (index != 0) {
+    useItem(toControl, index);
   }
-  return interface.PromtWithMessage<size_t>(message);
+}
+size_t CPlayerController::chooseItem(CEntity& toControl, invType type = ITEM) {
+  CInterface interface = CInterfaceLocator::getInerface();
+  const CInventory& inv(toControl.GetInventory());
+  size_t j = 1;
+  std::string message = "Choose item to use\n0) no item\n";
+  if (type == ITEM || type == BOTH) {
+    for (auto& elem : inv.GetItemInventory()) {
+      message += std::to_string(j);
+      message += ") ";
+      message += elem->PrintToString();
+      message += "\n";
+      j++;
+    }
+  }
+  if (type == WEAPON || type == BOTH) {
+    for (auto& elem : inv.GetWeaponInventory()) {
+      message += std::to_string(j);
+      message += ") ";
+      message += elem->PrintToString();
+      message += "\n";
+      j++;
+    }
+  }
+  size_t res = interface.PromtWithMessage<size_t>(message);
+  if (res >= j) res = 0;
+  return res;
+}
+bool CPlayerController::useItem(CEntity& toControl, size_t index) {
+  CInventory& inv(toControl.GetEditableInventory());
+  index--;
+  auto item = inv.TakeItem(index);
+  return item->Effect(toControl, toControl);
+}
+void CPlayerController::loot(CEntity& toControl) {
+  auto lootable = toControl.GetLootableEntities();
+  CInterface interface = CInterfaceLocator::getInerface();
+  if (lootable.size() == 0) {
+    interface.Message("No entities to loot");
+    return;
+  }
+  size_t choice = chooseEntityToLoot(lootable, toControl);
+  if (choice == 0) {
+    interface.Message("No entity chosen");
+    return;
+  }
+  choice--;
+  size_t itemIndex = chooseItem(*lootable.at(choice), ITEM);
+  if (choice == 0) {
+    interface.Message("No item chosen");
+    return;
+  }
+  itemIndex--;
+  CInventory& inv(lootable.at(choice)->GetEditableInventory());
+  if (itemIndex >= inv.GetItemInventory().size()) {
+    itemIndex -= inv.GetItemInventory().size();
+    toControl.GetEditableInventory().insert(lootable.at(choice)->GetEditableInventory(), itemIndex, WEAPON);
+  }
+  toControl.GetEditableInventory().insert(lootable.at(choice)->GetEditableInventory(), itemIndex, ITEM);
+}
+size_t CPlayerController::chooseEntityToLoot(std::vector<std::shared_ptr<CEntity>>& entities, CEntity& toControl) {
+  CInterface interface = CInterfaceLocator::getInerface();
+  std::string message = "Choose who do you want to loot!\n";
+  CCoordinates myPos = toControl.GetCoordinates();
+  size_t j = 1;
+  message += "0) nobody\n";
+  for (auto& elem : entities) {
+    message += std::to_string(j + 1);
+    message += ") ";
+    message += elem->GetName();
+    message += "\n";
+    message += "  position relative to you:";
+    CCoordinates coor = elem->GetCoordinates();
+    message += "  X: ";
+    message += std::to_string(coor.X() - myPos.X());
+    message += " Y: ";
+    message += std::to_string(coor.Y() - myPos.Y());
+    message += "\n";
+    j++;
+  }
+  size_t res = interface.PromtWithMessage<size_t>(message);
+  if (res >= j) res = 0;
+  return res;
 }

@@ -69,7 +69,8 @@ class CEntity {
 
   void AttachController(std::shared_ptr<CControler> controler);
 
-  std::vector<std::shared_ptr<CEntity>> getEntitiesInRange(int range) const;
+  std::vector<std::shared_ptr<CEntity>> GetEntitiesInRange(int range) const;
+  std::vector<std::shared_ptr<CEntity>> GetLootableEntities() const;
 
   const std::string& GetName() const;
   size_t GetHeight() const;
@@ -92,6 +93,7 @@ class CEntity {
   //  CInventory& GetInventory();
 
   const CInventory& GetInventory() const;
+  CInventory& GetEditableInventory();
 
   void PrintToBuffer(std::vector<std::vector<std::string>>& outputBuffer);
 

@@ -7,6 +7,7 @@
 #include <string>
 
 #include "CFileLoaderIterator.h"
+class CEntity;
 
 class CItem {
  public:
@@ -19,7 +20,7 @@ class CItem {
    * @param user entity which uses this item
    * @return if the effect was used successfully
    */
-    virtual bool Effect(std::shared_ptr<CEntity> toEffect, std::shared_ptr<CEntity> user) = 0;
+  virtual bool Effect(CEntity& toEffect, CEntity& user) = 0;
 
   virtual bool Load(CFileLoaderIt iterator) = 0;
 

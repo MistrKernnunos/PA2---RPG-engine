@@ -3,6 +3,7 @@
 //
 #include "CInventory.h"
 
+#include "CItem.h"
 #include "CItemLoader.h"
 #include "CWeaponLoader.h"
 bool CInventory::insert(CInventory& from, size_t index, invType type) {
@@ -98,3 +99,4 @@ std::unique_ptr<CWeapon> CInventory::TakeWeapon(size_t index) {
   }
   return ptr;
 }
+CInventory::CInventory(size_t invSize) : m_Size(invSize) {}

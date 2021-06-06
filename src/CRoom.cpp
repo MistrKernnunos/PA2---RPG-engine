@@ -265,3 +265,15 @@ EMapElem CRoom::isAtPosition(const CCoordinates& pos) const {
   };
   return m_Map.at(y).at(x);
 }
+std::vector<std::shared_ptr<CEntity>> CRoom::GetLootableEntities(const CCoordinates& pos) const {
+  std::vector<std::shared_ptr<CEntity>> entitiesInRange;
+  std::vector<std::shared_ptr<CEntity>> res;
+
+  entitiesInRange = EntitiesInRange(pos, LOOT_RANGE);
+  for (auto& elem : entitiesInRange) {
+    if (elem->IsLootable()) {
+      res.push_back(elem);
+    }
+  }
+  return res;
+}

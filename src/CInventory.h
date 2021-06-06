@@ -10,11 +10,11 @@
 #include "CItem.h"
 #include "CWeapon.h"
 
-enum invType { WEAPON, ITEM };
+enum invType { WEAPON, ITEM, BOTH };
 class CInventory {
  public:
   CInventory() = default;
-  CInventory(size_t invSize) : m_Size(invSize){};
+  explicit CInventory(size_t invSize);
 
   /**
    * transfers item from one inventory to another, checks wheather the item will
@@ -41,7 +41,6 @@ class CInventory {
 
   std::unique_ptr<CItem> TakeItem(size_t index);
   std::unique_ptr<CWeapon> TakeWeapon(size_t index);
-
 
   /**
    * loads inventory from xml file

@@ -29,4 +29,3 @@ bool CZombie::Move(const int x, const int y) {
   return false;
   // todo
 }
-bool CZombie::RecieveMessage(const CMessage& message) { return false; }

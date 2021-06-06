@@ -36,6 +36,8 @@ class CWeapon {
    */
   virtual bool Attack(CEntity& toAttack, CEntity& user) const = 0;
 
+  virtual std::string PrintToString() = 0;
+
   bool Load(CFileLoaderIt it);
 
   friend std::ostream& operator<<(std::ostream& os, const CWeapon& weapon);

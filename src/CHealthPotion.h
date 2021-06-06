@@ -14,7 +14,7 @@ class CHealthPotion : public CItem {
   CHealthPotion() = default;
   ~CHealthPotion() = default;
 
-      bool Effect(std::shared_ptr<CEntity> toEffect, std::shared_ptr<CEntity> user) override;
+      bool Effect(CEntity& toEffect, CEntity& user) override;
 
   static std::unique_ptr<CItem> Create();
 
