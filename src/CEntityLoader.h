@@ -3,6 +3,7 @@
 //
 #pragma once
 #include <map>
+#include <set>
 #include <string>
 
 #include "CControler.h"
@@ -10,10 +11,6 @@
 #include "CEntity.h"
 #include "CFactory.h"
 #include "CFileLoaderIterator.h"
-#include "CPlayer.h"
-#include "CPlayerController.h"
-#include "CZombie.h"
-#include "CZombieController.h"
 class CEntityLoader {
  public:
   CEntityLoader();
@@ -22,4 +19,5 @@ class CEntityLoader {
  private:
   CFactory<CEntity, std::string> m_EntityFactory;
   CFactory<CControler, std::string> m_ControlerFactory;
+  std::set<std::string> m_HasController;
 };

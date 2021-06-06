@@ -8,22 +8,28 @@
 #include "CWeaponLoader.h"
 bool CInventory::insert(CInventory& from, size_t index, invType type) {
   if (type == ITEM) {
-    auto item = from.TakeItem(index);
-    if (item) {
-      m_Inventory.resize(m_Inventory.size() + 1);
-      m_Inventory.back().swap(item);
-      return true;
-    } else {
-      return false;
+    if (index < from.GetItemInventory().size() && from.GetItemInventory().at(index)->GetSize() + m_CurrSize <= m_Size) {
+      auto item = from.TakeItem(index);
+      if (item) {
+        m_Inventory.resize(m_Inventory.size() + 1);
+        m_CurrSize += item->GetSize();
+        m_Inventory.back().swap(item);
+        return true;
+      } else {
+        return false;
+      }
     }
   } else {
     auto item = from.TakeWeapon(index);
-    if (item) {
-      m_WeaponInventory.resize(m_WeaponInventory.size() + 1);
-      m_WeaponInventory.back().swap(item);
-      return true;
-    } else {
-      return false;
+    if (index < from.GetWeaponInventory().size() && from.GetWeaponInventory().at(index)->GetSize() + m_CurrSize <= m_Size) {
+      if (item) {
+        m_WeaponInventory.resize(m_WeaponInventory.size() + 1);
+        m_CurrSize += item->GetSize();
+        m_WeaponInventory.back().swap(item);
+        return true;
+      } else {
+        return false;
+      }
     }
   }
   return false;
@@ -80,23 +86,29 @@ bool CInventory::Load(CFileLoaderIt it) {
 
   return true;
 }
+
 const std::vector<std::unique_ptr<CWeapon>>& CInventory::GetWeaponInventory() const { return m_WeaponInventory; }
+
 std::unique_ptr<CItem> CInventory::TakeItem(size_t index) {
   std::unique_ptr<CItem> ptr;
   if (index < m_Inventory.size()) {
     ptr.swap(m_Inventory.at(index));
+    m_CurrSize -= ptr->GetSize();
     this->drop(index, ITEM);
     return ptr;
   }
   return ptr;
 }
+
 std::unique_ptr<CWeapon> CInventory::TakeWeapon(size_t index) {
   std::unique_ptr<CWeapon> ptr;
   if (index < m_WeaponInventory.size()) {
     ptr.swap(m_WeaponInventory.at(index));
+    m_CurrSize -= ptr->GetSize();
     this->drop(index, WEAPON);
     return ptr;
   }
   return ptr;
 }
+
 CInventory::CInventory(size_t invSize) : m_Size(invSize) {}

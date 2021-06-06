@@ -5,7 +5,8 @@
 #include "CEntity.h"
 
 class CChest : public CEntity {
-  CChest() : m_Lootable(true){};
+ public:
+  CChest() { m_Lootable = true; };
 
   /**
    * executes one turn
@@ -24,27 +25,18 @@ class CChest : public CEntity {
    * entity takes enters defense state until start of next turn
    * @return true if successful, false if not (not enough action points)
    */
-  bool Defense() ;
+  bool Defense();
   /**
    * handles action if the entity is attacked
    * @param attackPower attack damage of the incoming attack
    * @return the damage that has the entity received
    */
   int Attacked(const int attackDamage);
+
+  /*
+   * returns blank Chest as shared pointer
+   */
+  static std::shared_ptr<CEntity> Create();
+
+  bool Move(const int x, const int y) override;
 };
-
-void CChest::Turn() {
-  // chest does nothing in her turn
-}
-
-bool CChest::Attack(CEntity& toAttack, const CWeapon& weapon) {
-  // chest does not attack
-  return false;
-}
-int CChest::Attacked(const int attackDamage) {
-  return -1  // chest cant be attacked
-}
-
-bool CChest::Defense() {
-  return false  // chest cant enter defense state
-}

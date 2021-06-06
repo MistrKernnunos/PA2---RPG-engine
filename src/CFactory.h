@@ -5,8 +5,8 @@
 #include <functional>
 #include <map>
 #include <memory>
-#include <string>
 #include <stdexcept>
+#include <string>
 
 template <class absClass, typename identifier, class retType = std::shared_ptr<absClass>,
           class maker = std::function<retType(void)>>
@@ -35,7 +35,7 @@ template <class absClass, typename identifier, typename retType, class maker>
 retType CFactory<absClass, identifier, retType, maker>::createObject(const identifier& id) {
   auto found = m_IdClassCreator.find(id);
   if (found == m_IdClassCreator.end()) {
-    throw std::invalid_argument("wrong entity type");
+    throw std::invalid_argument("wrong object type");
     return nullptr;
   }
   maker creator = found->second;
