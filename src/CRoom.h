@@ -24,7 +24,7 @@ class CRoom {
    */
   bool Load(CFileLoaderIt iterator, std::weak_ptr<CRoom> roomPtr);
 
-  //  bool Save(std::string filename) const;
+  bool Save(CFileLoaderIt it) const;
 
   /**
    * executes turns for all entites in room
@@ -104,6 +104,10 @@ class CRoom {
    * @return true if successful, false if not
    */
   bool loadDoors(CFileLoaderIt iterator);
+
+  bool saveWalls(CFileLoaderIt it, const std::vector<std::unique_ptr<CWall>>& walls) const;
+
+  bool saveEntities(CFileLoaderIt it) const;
 
   void exportToMap();
 };

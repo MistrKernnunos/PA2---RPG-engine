@@ -16,6 +16,7 @@ class CCoordinates {
   int X() const;
   int Y() const;
   bool Load(CFileLoaderIt iterator);
+  bool Save(CFileLoaderIt it) const;
   static CCoordinates LoadCoordinates(CFileLoaderIt iterator);
   friend std::ostream& operator<<(std::ostream& os, const CCoordinates& cordinates);
   bool operator==(const CCoordinates& rhs) const;

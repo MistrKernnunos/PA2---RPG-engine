@@ -52,3 +52,9 @@ bool CCoordinates::operator<=(const CCoordinates& rhs) const { return !(rhs < *t
 bool CCoordinates::operator>=(const CCoordinates& rhs) const { return !(*this < rhs); }
 bool CCoordinates::operator==(const CCoordinates& rhs) const { return m_X == rhs.m_X && m_Y == rhs.m_Y; }
 bool CCoordinates::operator!=(const CCoordinates& rhs) const { return !(rhs == *this); }
+bool CCoordinates::Save(CFileLoaderIt it) const {
+  if (it.GetName() != "coordinates") return false;
+  if (!it.CreateNewTextChildNode("X", std::to_string(m_X))) return false;
+  if (!it.CreateNewTextChildNode("Y", std::to_string(m_Y))) return false;
+  return true;
+}

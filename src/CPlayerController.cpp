@@ -23,7 +23,7 @@ void CPlayerController::Control(CEntity& toControl) {
         inventory(toControl);
         break;
       case 4:
-        // loot
+        loot(toControl);
         break;
       default:
         interface.Message("Wrong option,choose again.");
@@ -33,7 +33,6 @@ void CPlayerController::Control(CEntity& toControl) {
   interface.Message("End of your turn");
 }
 std::shared_ptr<CControler> CPlayerController::Create() { return std::make_shared<CPlayerController>(); }
-void CPlayerController::AttachToEntity(std::weak_ptr<CEntity> entity) { m_Entity = entity; }
 
 int CPlayerController::showActions(CEntity& toControl) {
   std::string actions = "Choose what do you want to do.\n1) move cost: ";
@@ -49,7 +48,7 @@ int CPlayerController::showActions(CEntity& toControl) {
   bool state = false;
   while (!state) {
     int res = interface.PromtWithMessage<int>(actions);
-    if (res > 0 && res <= 3) {
+    if (res > 0 && res <= 4) {
       state = true;
       return res;
     } else {
@@ -85,6 +84,8 @@ void CPlayerController::attack(CEntity& toControl) {
   entityIndex--;
   if (!toControl.Attack(*entities.at(entityIndex), *inventory.GetWeaponInventory().at(weaponIndex))) {
     interface.Message("Attack failed");
+  } else {
+    interface.Message("Attack succesful");
   }
 }
 size_t CPlayerController::chooseEntityToAttack(CEntity& toControl,
@@ -115,6 +116,8 @@ size_t CPlayerController::chooseEntityToAttack(CEntity& toControl,
 }
 size_t CPlayerController::chooseWeapon(CEntity& toControl) { return chooseItem(toControl, WEAPON); }
 void CPlayerController::inventory(CEntity& toControl) {
+  CInterface interface = CInterfaceLocator::getInerface();
+  interface.Message("Choose item to use");
   size_t index = chooseItem(toControl, ITEM);
   if (index != 0) {
     useItem(toControl, index);
@@ -124,7 +127,7 @@ size_t CPlayerController::chooseItem(CEntity& toControl, invType type = ITEM) {
   CInterface interface = CInterfaceLocator::getInerface();
   const CInventory& inv(toControl.GetInventory());
   size_t j = 1;
-  std::string message = "Choose item to use\n0) no item\n";
+  std::string message = "0) no item\n";
   if (type == ITEM || type == BOTH) {
     for (auto& elem : inv.GetItemInventory()) {
       message += std::to_string(j);
@@ -166,18 +169,25 @@ void CPlayerController::loot(CEntity& toControl) {
     return;
   }
   choice--;
+  interface.Message("Choose item to loot");
   size_t itemIndex = chooseItem(*lootable.at(choice), ITEM);
-  if (choice == 0) {
+  if (itemIndex == 0) {
     interface.Message("No item chosen");
     return;
   }
   itemIndex--;
+  bool res = false;
   CInventory& inv(lootable.at(choice)->GetEditableInventory());
   if (itemIndex >= inv.GetItemInventory().size()) {
     itemIndex -= inv.GetItemInventory().size();
-    toControl.GetEditableInventory().insert(lootable.at(choice)->GetEditableInventory(), itemIndex, WEAPON);
+    res = toControl.GetEditableInventory().insert(lootable.at(choice)->GetEditableInventory(), itemIndex, WEAPON);
   }
-  toControl.GetEditableInventory().insert(lootable.at(choice)->GetEditableInventory(), itemIndex, ITEM);
+  res = toControl.GetEditableInventory().insert(lootable.at(choice)->GetEditableInventory(), itemIndex, ITEM);
+  if (res) {
+    interface.Message("transfer successful");
+  } else {
+    interface.Message("not enough space in inventory");
+  }
 }
 size_t CPlayerController::chooseEntityToLoot(std::vector<std::shared_ptr<CEntity>>& entities, CEntity& toControl) {
   CInterface interface = CInterfaceLocator::getInerface();
@@ -186,7 +196,7 @@ size_t CPlayerController::chooseEntityToLoot(std::vector<std::shared_ptr<CEntity
   size_t j = 1;
   message += "0) nobody\n";
   for (auto& elem : entities) {
-    message += std::to_string(j + 1);
+    message += std::to_string(j);
     message += ") ";
     message += elem->GetName();
     message += "\n";

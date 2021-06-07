@@ -15,6 +15,7 @@ class CHealthPotion : public CItem {
   ~CHealthPotion() = default;
 
       bool Effect(CEntity& toEffect, CEntity& user) override;
+  bool Save(CFileLoaderIt iterator) const override;
 
   static std::unique_ptr<CItem> Create();
 

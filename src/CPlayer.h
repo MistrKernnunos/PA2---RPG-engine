@@ -7,8 +7,12 @@
 
 class CPlayer : public CEntity {
  public:
-  CPlayer() = default;
+  CPlayer();
 
+ private:
+  bool addEntityId(CFileLoaderIt it) override;
+
+ public:
   /**
    * executes one turn
    */

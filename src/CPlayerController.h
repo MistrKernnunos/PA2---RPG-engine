@@ -17,7 +17,6 @@ class CPlayerController : public CControler {
 
   void Control(CEntity& toControl) override;
   static std::shared_ptr<CControler> Create();
-  void AttachToEntity(std::weak_ptr<CEntity> entity) override;
 
  private:
   size_t chooseEntityToAttack(CEntity& toControl, std::vector<std::shared_ptr<CEntity>>& entitiesToAttack);

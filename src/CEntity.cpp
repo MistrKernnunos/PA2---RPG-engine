@@ -5,7 +5,6 @@
 
 #include "CInventory.h"
 #include "CRoom.h"
-std::string CEntity::m_Apperance = "\33[105m*\33[0m";
 
 const std::string& CEntity::GetName() const { return m_Name; }
 size_t CEntity::GetHeight() const { return m_Height; }
@@ -74,6 +73,7 @@ bool CEntity::loadProperties(CFileLoaderIt iterator) {
   m_AttackCost = std::stoi(iterator.GetContent("attackCost"));
   iterator.Next(2);
   m_DefenseConst = std::stoi(iterator.GetContent("defenseCost"));
+  iterator.Next(2);
   return true;
 }
 void CEntity::AttachController(std::shared_ptr<CControler> controler) { m_Controller = controler; }
@@ -97,4 +97,39 @@ void CEntity::SetHealth(int mHealth) { m_Health = mHealth; }
 CInventory& CEntity::GetEditableInventory() { return m_Inventory; }
 std::vector<std::shared_ptr<CEntity>> CEntity::GetLootableEntities() const {
   return m_Room.lock()->GetLootableEntities(m_Coordinates);
+}
+
+bool CEntity::Save(CFileLoaderIt it) {
+  if (it.GetName() != "entity") {
+    return false;
+  }
+  if (!addEntityId(it)) return false;
+  if (!it.CreateNewChildNode("properties")) return false;
+  if (!it.CreateNewChildNode("coordinates")) return false;
+  if (!it.CreateNewChildNode("inventory")) return false;
+  it.Child();
+  saveProperties(it);
+  it.Next();
+  m_Coordinates.Save(it);
+  it.Next();
+  m_Inventory.Save(it);
+}
+bool CEntity::saveProperties(CFileLoaderIt it) {
+  if (it.GetName() != "properties") {
+    return false;
+  }
+  it.CreateNewTextChildNode("name", m_Name);
+  it.CreateNewTextChildNode("maxHealth", std::to_string(m_MaxHealth));
+  it.CreateNewTextChildNode("health", std::to_string(m_Health));
+  it.CreateNewTextChildNode("attack", std::to_string(m_AttackPower));
+  it.CreateNewTextChildNode("defense", std::to_string(m_DefencePower));
+  it.CreateNewTextChildNode("actionPoints", std::to_string(m_ActionPoints));
+  it.CreateNewTextChildNode("xp", std::to_string(m_XP));
+  it.CreateNewTextChildNode("level", std::to_string(m_Level));
+  it.CreateNewTextChildNode("movement", std::to_string(m_Movement));
+  it.CreateNewTextChildNode("levelCoef", std::to_string(m_NextLevelCoef));
+  it.CreateNewTextChildNode("movementCost", std::to_string(m_MovementCost));
+  it.CreateNewTextChildNode("attackCost", std::to_string(m_AttackCost));
+  it.CreateNewTextChildNode("defenseCost", std::to_string(m_DefenseConst));
+  return true;
 }

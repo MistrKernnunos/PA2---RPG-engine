@@ -22,9 +22,9 @@ class CGame {
 
   bool LoadMap(const std::string &path);
 
-  //  bool Save() const;
+  bool Save() const;
 
-    bool Start();
+  bool Start();
 
   bool IsInitialized() const;
 
@@ -41,10 +41,12 @@ class CGame {
 
  private:
   bool loadSpawnPoint(CFileLoaderIt it);
+  bool saveSpawnPoint(CFileLoaderIt it) const;
 
   CInterface m_Interface;
   std::map<int, std::shared_ptr<CRoom>> m_Rooms;
   int m_spawnRoomID = 0;
+  std::string m_Name;
   CCoordinates m_SpawnPoint;
   bool m_Initialized = false;
   int m_CurrRoomID = 0;

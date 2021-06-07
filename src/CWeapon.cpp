@@ -32,3 +32,14 @@ int CWeapon::GetRange() const { return m_Range; }
 int CWeapon::GetAttackPower() const { return m_AttackPower; }
 int CWeapon::GetDefensePower() const { return m_DefensePower; }
 size_t CWeapon::GetSize() const { return m_Size; }
+bool CWeapon::Save(CFileLoaderIt it) const {
+  if (it.GetName() != "weapon") {
+    return false;
+  }
+  if (!addEntityID(it)) return false;
+  if (!it.CreateNewTextChildNode("name", m_Name)) return false;
+  if (!it.CreateNewTextChildNode("range", std::to_string(m_Range))) return false;
+  if (!it.CreateNewTextChildNode("attackPower", std::to_string(m_AttackPower))) return false;
+  if (!it.CreateNewTextChildNode("defensePower", std::to_string(m_DefensePower))) return false;
+  if (!it.CreateNewTextChildNode("size", std::to_string(m_Size))) return false;
+}

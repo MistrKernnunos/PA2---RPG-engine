@@ -23,7 +23,7 @@ bool CRoom::Load(CFileLoaderIt iterator, std::weak_ptr<CRoom> roomPtr) {
   }
   prop.pop_front();
   if (prop.front().first == "name") {
-    m_Name = prop.front().first;
+    m_Name = prop.front().second;
   }
   if (m_Name.empty() || m_ID == 0) {  // check if they were valid
     throw std::invalid_argument("invalid room properties");
@@ -36,9 +36,9 @@ bool CRoom::Load(CFileLoaderIt iterator, std::weak_ptr<CRoom> roomPtr) {
   if (!iterator.Next()) return false;          // move to text node
   if (!iterator.Next()) return false;          // move to perimeter node
   if (!loadInner(iterator)) return false;      // load inner walls
-  if (!iterator.Next()) return false;          // move to text node
-  if (!iterator.Next()) return false;          // move to doors node
-  if (!loadDoors(iterator)) return false;      // load doors
+//  if (!iterator.Next()) return false;          // move to text node
+//  if (!iterator.Next()) return false;          // move to doors node
+//  if (!loadDoors(iterator)) return false;      // load doors
   CEntityLoader entityLoader;                  // init entity loader
   if (!iterator.Next()) return false;          // move to text node
   if (!iterator.Next()) return false;          // move to doors node
@@ -276,4 +276,48 @@ std::vector<std::shared_ptr<CEntity>> CRoom::GetLootableEntities(const CCoordina
     }
   }
   return res;
+}
+bool CRoom::Save(CFileLoaderIt it) const {
+  if (it.GetName() != "room") {
+    return false;
+  }
+
+  std::list<std::pair<std::string, std::string>> propList;
+  propList.emplace_back("ID", std::to_string(m_ID));
+  propList.emplace_back("name", m_Name);
+  it.AddProperties(propList);
+  it.CreateNewChildNode("perimeter");
+  it.CreateNewChildNode("inner");
+  it.CreateNewChildNode("entities");
+  it.Child();
+  saveWalls(it, perimeterWalls);
+  it.Next();
+  saveWalls(it, innerWalls);
+  it.Next();
+  saveEntities(it);
+}
+
+bool CRoom::saveWalls(CFileLoaderIt it, const std::vector<std::unique_ptr<CWall>>& walls) const {
+  for (size_t i = 0; i < walls.size(); ++i) {
+    it.CreateNewChildNode("wall");
+  }
+  it.Child();
+  for (auto& elem : walls) {
+    elem->Save(it);
+    it.Next();
+  }
+  return true;
+}
+bool CRoom::saveEntities(CFileLoaderIt it) const {
+  if (it.GetName() != "entities") {
+    return false;
+  }
+  for (size_t i = 0; i < m_Entities.size(); ++i) {
+    it.CreateNewChildNode("entity");
+  }
+  it.Child();
+  for (auto& elem : m_Entities) {
+    elem.second->Save(it);
+    it.Next();
+  }
 }

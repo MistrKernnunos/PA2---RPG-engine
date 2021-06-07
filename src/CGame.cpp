@@ -10,12 +10,21 @@
 
 bool CGame::LoadMap(const std::string &path) {
   CFileLoader loader;
-  if (!loader.loadXmlFile(path)) {
+  if (!loader.LoadXmlFile(path)) {
     throw std::invalid_argument("cant open map file");
     return false;
   }
+  auto it = loader.GetTopNode();
+  it.Child();
+  it.Next();
 
-  auto it = loader.GetNode("spawnPoint");
+  m_Name = it.GetContent("name");
+  if (m_Name.empty()) {
+    return false;
+  }
+
+  it.Next(2);
+
   if (!loadSpawnPoint(it)) {
     return false;
   }
@@ -87,4 +96,35 @@ bool CGame::Start() {
   while (true) {
     m_Rooms.at(m_CurrRoomID)->ExecuteTurns();
   }
+}
+bool CGame::Save() const {
+  CFileLoader save;
+  CFileLoaderIt it = save.NewDoc("map");
+  it.CreateNewTextChildNode("name", m_Name);
+  it.CreateNewChildNode("spawnPoint");
+  it.CreateNewChildNode("rooms");
+  it.Child();
+  it.Next();
+  saveSpawnPoint(it);
+  it.Next();
+  for (size_t i = 0; i < m_Rooms.size(); ++i) {
+    it.CreateNewChildNode("room");
+  }
+  it.Child();
+  for (auto &elem : m_Rooms) {
+    elem.second->Save(it);
+    it.Next();
+  }
+  save.SaveFile("./test.xml");
+}
+bool CGame::saveSpawnPoint(CFileLoaderIt it) const {
+  if (it.GetName() != "spawnPoint") {
+    return false;
+  }
+  if (!it.CreateNewTextChildNode("roomID", std::to_string(m_spawnRoomID))) return false;
+  if (!it.CreateNewChildNode("coordinates")) return false;
+  if (!it.Child()) return false;
+  if (!it.Next()) return false;
+
+  return m_SpawnPoint.Save(it);
 }

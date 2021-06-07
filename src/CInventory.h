@@ -49,9 +49,19 @@ class CInventory {
    */
   bool Load(CFileLoaderIt it);
 
+  /**
+   * saves inventory to it
+   * @param it iterator to where to save it
+   * @return true if successful, false if not
+   */
+  bool Save(CFileLoaderIt it) const;
+
  private:
   size_t m_Size = 0;
   size_t m_CurrSize = 0;
   std::vector<std::unique_ptr<CItem>> m_Inventory;
   std::vector<std::unique_ptr<CWeapon>> m_WeaponInventory;
+
+  bool saveItems(CFileLoaderIt it) const;
+  bool saveWeapons(CFileLoaderIt it) const;
 };

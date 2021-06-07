@@ -42,6 +42,7 @@ class CWall {
 
   static CWall LoadWall(CFileLoaderIt it);
   bool Load(CFileLoaderIt it);
+  bool Save(CFileLoaderIt it);
 
   void PrintToBuffer(std::vector<std::vector<std::string>>& outputBuffer, const std::string& floor);
 

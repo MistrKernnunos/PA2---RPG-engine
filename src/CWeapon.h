@@ -39,6 +39,7 @@ class CWeapon {
   virtual std::string PrintToString() = 0;
 
   bool Load(CFileLoaderIt it);
+  bool Save(CFileLoaderIt it) const;
 
   friend std::ostream& operator<<(std::ostream& os, const CWeapon& weapon);
 
@@ -49,6 +50,8 @@ class CWeapon {
   size_t GetSize() const;
 
  private:
+  virtual bool addEntityID(CFileLoaderIt it) const = 0;
+
   std::string m_Name;
   int m_Range = 0;
   int m_AttackPower = 0;

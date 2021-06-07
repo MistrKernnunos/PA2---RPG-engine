@@ -9,10 +9,8 @@ class CControler {
  public:
   CControler() = default;
   virtual ~CControler() = default;
-  virtual void AttachToEntity(std::weak_ptr<CEntity> entity) = 0;
   virtual void Control(CEntity& toControl) = 0;
 
 
  protected:
-  std::weak_ptr<CEntity> m_Entity;
 };

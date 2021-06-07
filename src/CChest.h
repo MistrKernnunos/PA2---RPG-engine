@@ -6,7 +6,16 @@
 
 class CChest : public CEntity {
  public:
-  CChest() { m_Lootable = true; };
+  CChest() {
+    m_Lootable = true;
+    m_Apperance = "\33[105mT\33[0m";
+  }
+
+ private:
+  bool addEntityId(CFileLoaderIt it) override;
+
+ public:
+  ;
 
   /**
    * executes one turn

@@ -153,3 +153,21 @@ void CWall::ExportToMap(std::vector<std::vector<EMapElem>>& map) {
     map.at(y).at(x) = EMapElem::WALL;
   }
 }
+bool CWall::Save(CFileLoaderIt it) {
+  if (it.GetName() != "wall") {
+    return false;
+  }
+  std::list<std::pair<std::string, std::string>> propList;
+  propList.emplace_back("name", "start");
+  it.CreateNewChildNode("coordinates");
+  it.CreateNewChildNode("coordinates");
+  it.Child();
+  it.AddProperties(propList);
+  m_Start.Save(it);
+
+  it.Next();
+  propList.clear();
+  propList.emplace_back("name", "end");
+  it.AddProperties(propList);
+  return m_End.Save(it);
+}

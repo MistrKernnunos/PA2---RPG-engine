@@ -14,7 +14,10 @@ bool CPlayer::Attack(CEntity& toAttack, const CWeapon& weapon) {
   return false;
 }
 
-bool CPlayer::Defense() { return false; }
+bool CPlayer::Defense() {
+  // todo
+  return false;
+}
 
 int CPlayer::Attacked(const int attackDamage) {
   int damage = attackDamage - (m_DefencePower * m_Level);
@@ -22,6 +25,7 @@ int CPlayer::Attacked(const int attackDamage) {
   m_Health -= damage;
   if (m_Health <= 0) {
     m_State = DEAD;
+    m_Lootable = true;
     CInterface interface = CInterfaceLocator::getInerface();
     std::string message = GetName();
     message += " died.";
@@ -48,4 +52,12 @@ void CPlayer::Turn() {
   }
 }
 std::shared_ptr<CEntity> CPlayer::Create() { return std::make_shared<CPlayer>(); }
-
+CPlayer::CPlayer() { m_Apperance = "\33[105mP\33[0m"; }
+bool CPlayer::addEntityId(CFileLoaderIt it) {
+  if (it.GetName() != "entity") {
+    return false;
+  }
+  std::list<std::pair<std::string, std::string>> propList;
+  propList.emplace_back("entityID", "player");
+  return it.AddProperties(propList);
+}

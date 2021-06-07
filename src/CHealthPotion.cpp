@@ -40,3 +40,15 @@ bool CHealthPotion::Effect(CEntity& toEffect, CEntity& user) {
   toEffect.SetHealth(health);
   return true;
 }
+bool CHealthPotion::Save(CFileLoaderIt it) const {
+  if (it.GetName() != "item") {
+    return false;
+  }
+
+  std::list<std::pair<std::string, std::string>> propList;
+  propList.emplace_back("itemID", "healthPotion");
+  it.AddProperties(propList);
+  it.CreateNewTextChildNode("name", m_Name);
+  it.CreateNewTextChildNode("healing", std::to_string(m_HealingStrength));
+  return it.CreateNewTextChildNode("size", std::to_string(m_Size));
+}

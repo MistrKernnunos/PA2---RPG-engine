@@ -19,3 +19,11 @@ std::string CSword::PrintToString() {
   message += "  range: ";
   message += std::to_string(GetRange());
 }
+bool CSword::addEntityID(CFileLoaderIt it) const {
+  if (it.GetName() != "weapon") {
+    return false;
+  }
+  std::list<std::pair<std::string, std::string>> propList;
+  propList.emplace_back("weaponID", "sword");
+  return it.AddProperties(propList);
+}

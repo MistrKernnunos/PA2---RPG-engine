@@ -8,7 +8,11 @@
 
 class CZombie : public CEntity {
  public:
-  CZombie() = default;
+ private:
+  bool addEntityId(CFileLoaderIt it) override;
+
+ public:
+  CZombie();
 
   /**
    * executes one turn
@@ -44,4 +48,8 @@ class CZombie : public CEntity {
   bool Move(const int x, const int y);
 
   static std::shared_ptr<CEntity> Create();
+  bool GetAttacked() const;
+
+ private:
+  bool m_Attacked = false;
 };

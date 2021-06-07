@@ -20,4 +20,15 @@ bool CChest::Defense() {
 }
 std::shared_ptr<CEntity> CChest::Create() { return std::make_shared<CChest>(); }
 
-bool CChest::Move(const int x, const int y) { return false; }
+bool CChest::Move(const int x, const int y) {
+  // chest cant move
+  return false;
+}
+bool CChest::addEntityId(CFileLoaderIt it) {
+  if (it.GetName() != "entity") {
+    return false;
+  }
+  std::list<std::pair<std::string, std::string>> propList;
+  propList.emplace_back("entityID", "chest");
+  return it.AddProperties(propList);
+}

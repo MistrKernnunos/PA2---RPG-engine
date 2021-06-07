@@ -21,7 +21,8 @@ bool CInventory::insert(CInventory& from, size_t index, invType type) {
     }
   } else {
     auto item = from.TakeWeapon(index);
-    if (index < from.GetWeaponInventory().size() && from.GetWeaponInventory().at(index)->GetSize() + m_CurrSize <= m_Size) {
+    if (index < from.GetWeaponInventory().size() &&
+        from.GetWeaponInventory().at(index)->GetSize() + m_CurrSize <= m_Size) {
       if (item) {
         m_WeaponInventory.resize(m_WeaponInventory.size() + 1);
         m_CurrSize += item->GetSize();
@@ -112,3 +113,51 @@ std::unique_ptr<CWeapon> CInventory::TakeWeapon(size_t index) {
 }
 
 CInventory::CInventory(size_t invSize) : m_Size(invSize) {}
+bool CInventory::Save(CFileLoaderIt it) const {
+  if (it.GetName() != "inventory") {
+    return false;
+  }
+  if (!it.CreateNewTextChildNode("size", std::to_string(m_Size))) return false;
+  if (!it.CreateNewChildNode("items")) return false;
+  if (!it.CreateNewChildNode("weapons")) return false;
+
+  it.Child();
+  it.Next();
+  if (!saveItems(it)) return false;
+  it.Next();
+  if (!saveWeapons(it)) return false;
+}
+bool CInventory::saveItems(CFileLoaderIt it) const {
+  if (it.GetName() != "items") {
+    return false;
+  }
+
+  if (m_Inventory.empty()) {
+    return true;
+  }
+  for (size_t i = 0; i < m_Inventory.size(); ++i) {
+    it.CreateNewChildNode("item");
+  }
+  it.Child();
+  for (auto& elem : m_Inventory) {
+    if (!elem->Save(it)) return false;
+    it.Next();
+  }
+  return true;
+}
+bool CInventory::saveWeapons(CFileLoaderIt it) const {
+  if (it.GetName() != "weapons") {
+    return false;
+  }
+  if (m_WeaponInventory.empty()) {
+    return true;
+  }
+  for (size_t i = 0; i < m_Inventory.size(); ++i) {
+    it.CreateNewChildNode("weapon");
+  }
+  it.Child();
+  for (auto& elem : m_WeaponInventory) {
+    elem->Save(it);
+    it.Next();
+  }
+}

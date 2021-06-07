@@ -9,7 +9,7 @@ CFileLoader::~CFileLoader() {
   xmlCleanupParser();
 }
 
-bool CFileLoader::loadXmlFile(const std::string filePath) {
+bool CFileLoader::LoadXmlFile(const std::string filePath) {
   doc = xmlReadFile(filePath.c_str(), nullptr, 0);
   if (doc == nullptr) {
     return false;
@@ -54,4 +54,19 @@ CFileLoaderIt CFileLoader::GetNode(const std::string& name) {
   xmlNode* res = getNode(name.c_str(), xmlDocGetRootElement(doc));
   CFileLoaderIt resIt(res, doc);
   return resIt;
+}
+CFileLoaderIt CFileLoader::GetTopNode() {
+  xmlNode* node = xmlDocGetRootElement(doc);
+  CFileLoaderIt it(node, doc);
+  return it;
+}
+CFileLoaderIt CFileLoader::NewDoc(const std::string rootName) {
+  doc = xmlNewDoc((xmlChar*)"1.0");
+  xmlNodePtr rootNode = xmlNewNode(NULL, (xmlChar*)rootName.c_str());
+  xmlDocSetRootElement(doc, rootNode);
+  return GetTopNode();
+}
+bool CFileLoader::SaveFile(const std::string filePath) {
+  if (xmlSaveFormatFileEnc(filePath.c_str(), doc, "utf-8", 1) == -1) return false;
+  return true;
 }

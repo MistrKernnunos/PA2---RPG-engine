@@ -14,13 +14,14 @@ class CFileLoader {
  public:
   CFileLoader() = default;
   ~CFileLoader();
-  bool loadXmlFile(const std::string filePath);
+  bool LoadXmlFile(const std::string filePath);
+  CFileLoaderIt NewDoc(const std::string rootName);
+  bool SaveFile(const std::string filePath);
   void printXML(xmlNode* a_Node);
   CFileLoaderIt GetNode(const std::string& name);
+  CFileLoaderIt GetTopNode();
 
  private:
   xmlNode* getNode(const char* name, xmlNode* node);
-  //  xmlChar* stringToXmlChar(const std::string& toEncode);
-  //  std::string xmlCharToString(xmlChar* toEncode);
   xmlDocPtr doc = nullptr;
 };

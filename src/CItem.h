@@ -23,6 +23,7 @@ class CItem {
   virtual bool Effect(CEntity& toEffect, CEntity& user) = 0;
 
   virtual bool Load(CFileLoaderIt iterator) = 0;
+  virtual bool Save(CFileLoaderIt iterator) const = 0;
 
   friend std::ostream& operator<<(std::ostream& os, const CItem& item);
 

@@ -10,5 +10,9 @@ class CZombieController : public CControler {
   ~CZombieController() override = default;
   void Control(CEntity& toControl) override;
   static std::shared_ptr<CControler> Create();
-  void AttachToEntity(std::weak_ptr<CEntity> entity) override;
+
+ private:
+  void idleMove(CEntity& toControl);
+  void underAttack(CEntity& toControl);
+  static int m_FirstStep;
 };

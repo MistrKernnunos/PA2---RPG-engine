@@ -13,6 +13,7 @@
 #include "CGame.h"
 #include "CInventory.h"
 #include "CMessage.h"
+class CPlayerCreator;
 class CRoom;
 
 enum state { DEAD, ALIVE };
@@ -58,6 +59,13 @@ class CEntity {
   bool Load(CFileLoaderIt it);
 
   /**
+   * saves entity to iterator
+   * @param it where to save the entity
+   * @return true if successful false if not
+   */
+  bool Save(CFileLoaderIt it);
+
+  /**
    *moves entity by x and y
    * @param x
    * @param y
@@ -99,8 +107,12 @@ class CEntity {
 
   friend std::ostream& operator<<(std::ostream& os, const CEntity& entity);
 
+  friend CPlayerCreator;
+
  private:
   bool loadProperties(CFileLoaderIt iterator);
+  bool saveProperties(CFileLoaderIt iterator);
+  virtual bool addEntityId(CFileLoaderIt it) = 0;
 
  protected:
   // information about the entity
@@ -130,5 +142,5 @@ class CEntity {
   std::weak_ptr<CRoom> m_Room;
   CCoordinates m_Coordinates;
   CInventory m_Inventory;
-  static std::string m_Apperance;
+  std::string m_Apperance = "\33[105m*\33[0m";
 };
