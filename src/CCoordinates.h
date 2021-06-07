@@ -25,7 +25,6 @@ class CCoordinates {
   bool operator>(const CCoordinates& rhs) const;
   bool operator<=(const CCoordinates& rhs) const;
   bool operator>=(const CCoordinates& rhs) const;
-  int Distance(const CCoordinates& other);
 
  private:
   int m_X = 0;

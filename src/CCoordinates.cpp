@@ -14,7 +14,6 @@ bool CCoordinates::Load(CFileLoaderIt iterator) {
 
   if (!(iterator.GetName() == "X")) {
     throw std::invalid_argument("bad coordinates node name");
-    return false;
   }
   m_X = std::stoi(iterator.GetContent());
   iterator.Next();
@@ -22,7 +21,6 @@ bool CCoordinates::Load(CFileLoaderIt iterator) {
 
   if (!(iterator.GetName() == "Y")) {
     throw std::invalid_argument("bad coordinates node name");
-    return false;
   }
   m_Y = std::stoi(iterator.GetContent());
   return true;
@@ -36,11 +34,6 @@ CCoordinates CCoordinates::LoadCoordinates(CFileLoaderIt iterator) {
 std::ostream& operator<<(std::ostream& os, const CCoordinates& cordinates) {
   os << "m_X: " << cordinates.m_X << " m_Y: " << cordinates.m_Y;
   return os;
-}
-int CCoordinates::Distance(const CCoordinates& other) {
-  int x = X() - other.X();
-  int y = Y() - other.Y();
-  return std::hypot(x, y);
 }
 bool CCoordinates::operator<(const CCoordinates& rhs) const {
   if (m_X < rhs.m_X) return true;

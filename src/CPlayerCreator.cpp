@@ -46,7 +46,7 @@ void CPlayerCreator::chooseProperties() {
       message += std::to_string(elem.second.get());
       message += "\n";
     }
-    message += "q to exit";
+    message += "q to finish";
     res = interface.PromtWithMessage<std::string, int>(message);
     if (res.first == "q") {
       break;

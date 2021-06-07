@@ -6,8 +6,8 @@
 
 #include "CFileLoader.h"
 #include "CFileLoaderIterator.h"
+#include "CMap.h"
 #include "CPlayerCreator.h"
-#include "CRoom.h"
 bool CGame::LoadMap(const std::string &path) {
   CFileLoader loader;
   if (!loader.LoadXmlFile(path)) {
@@ -46,7 +46,7 @@ bool CGame::LoadMap(const std::string &path) {
       return false;
     }
 
-    auto room = std::make_shared<CRoom>(ID, prop.back().second, *this);
+    auto room = std::make_shared<CMap>(ID, prop.back().second, *this);
 
     if (!room->Load(it, room)) {
       return false;
@@ -92,11 +92,11 @@ void CGame::Render() {
   auto room = m_Rooms.at(m_CurrRoomID);
   m_Interface.Print(*room);
 }
-bool CGame::Start() {
+void CGame::Start() {
   while (m_Rooms.at(m_CurrRoomID)->ExecuteTurns()) {
     Render();
   }
-
+    EndGame();
 }
 bool CGame::Save() const {
   CFileLoader save;
@@ -116,7 +116,8 @@ bool CGame::Save() const {
     elem.second->Save(it);
     it.Next();
   }
-  return save.SaveFile("./test.xml");
+  std::string path = m_Interface.PromtWithMessage<std::string>("Please enter path, where to save the game.");
+  return save.SaveFile(path);
 }
 bool CGame::saveSpawnPoint(CFileLoaderIt it) const {
   if (it.GetName() != "spawnPoint") {
@@ -129,14 +130,21 @@ bool CGame::saveSpawnPoint(CFileLoaderIt it) const {
 
   return m_SpawnPoint.Save(it);
 }
-bool CGame::CreateGame() {
-  CPlayerCreator creator;
-  auto player = creator.Create();
-}
 bool CGame::SpawnPlayer(std::shared_ptr<CEntity> player) {
   return m_Rooms.at(m_spawnRoomID)->TransferEntityToRoom(player, m_SpawnPoint);
 }
 void CGame::EndGame() {
   std::string message = "What dou you want to do?\n1)Save game\n2)quit";
-
+  int res = m_Interface.Chooser(message, 2);
+  switch (res) {
+    case 1:
+      Save();
+      break;
+    case 2:
+      return;
+      break;
+    default:
+      m_Interface.Message("Wrong option,choose again.");
+      break;
+  }
 }

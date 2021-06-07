@@ -12,9 +12,8 @@
 #include "CFileLoaderIterator.h"
 #include "CGame.h"
 #include "CInventory.h"
-#include "CMessage.h"
 class CPlayerCreator;
-class CRoom;
+class CMap;
 
 enum state { DEAD, ALIVE };
 
@@ -39,11 +38,6 @@ class CEntity {
    */
   virtual bool Attack(CEntity& toAttack, const CWeapon& weapon) = 0;
 
-  /**
-   * entity takes enters defense state until start of next turn
-   * @return true if successful, false if not (not enough action points)
-   */
-  virtual bool Defense() = 0;
   /**
    * handles action if the entity is attacked
    * @param attackPower attack damage of the incoming attack
@@ -81,8 +75,6 @@ class CEntity {
   std::vector<std::shared_ptr<CEntity>> GetLootableEntities() const;
 
   const std::string& GetName() const;
-  size_t GetHeight() const;
-  size_t GetWidth() const;
   int GetMaxHealth() const;
   int GetHealth() const;
   int GetDefencePower() const;
@@ -96,7 +88,8 @@ class CEntity {
   int GetAttackCost() const;
   int GetDefenseConst() const;
   state GetState() const;
-  bool InsertIntoRoom(std::weak_ptr<CRoom> room);
+  int GetMovement() const;
+  bool InsertIntoRoom(std::weak_ptr<CMap> room);
   void SetHealth(int mHealth);
   //  CInventory& GetInventory();
 
@@ -117,8 +110,6 @@ class CEntity {
  protected:
   // information about the entity
   std::string m_Name;
-  size_t m_Height = 1;
-  size_t m_Width = 1;
   int m_MaxHealth = 0;
   int m_NextLevelCoef = 5;
   int m_Movement = 0;
@@ -139,7 +130,7 @@ class CEntity {
   state m_State = ALIVE;
   std::shared_ptr<CControler> m_Controller;
 
-  std::weak_ptr<CRoom> m_Room;
+  std::weak_ptr<CMap> m_Room;
   CCoordinates m_Coordinates;
   CInventory m_Inventory;
   std::string m_Apperance = "\33[105m*\33[0m";

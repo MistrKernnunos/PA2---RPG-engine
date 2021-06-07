@@ -10,27 +10,13 @@ bool CInventory::insert(CInventory& from, size_t index, invType type) {
   if (type == ITEM) {
     if (index < from.GetItemInventory().size() && from.GetItemInventory().at(index)->GetSize() + m_CurrSize <= m_Size) {
       auto item = from.TakeItem(index);
-      if (item) {
-        m_Inventory.resize(m_Inventory.size() + 1);
-        m_CurrSize += item->GetSize();
-        m_Inventory.back().swap(item);
-        return true;
-      } else {
-        return false;
-      }
+      return insert(item);
     }
   } else {
-    auto item = from.TakeWeapon(index);
     if (index < from.GetWeaponInventory().size() &&
         from.GetWeaponInventory().at(index)->GetSize() + m_CurrSize <= m_Size) {
-      if (item) {
-        m_WeaponInventory.resize(m_WeaponInventory.size() + 1);
-        m_CurrSize += item->GetSize();
-        m_WeaponInventory.back().swap(item);
-        return true;
-      } else {
-        return false;
-      }
+      auto item = from.TakeWeapon(index);
+      return insert(item);
     }
   }
   return false;
@@ -128,7 +114,7 @@ bool CInventory::Save(CFileLoaderIt it) const {
   it.Next();
   if (!saveItems(it)) return false;
   it.Next();
-  if (!saveWeapons(it)) return false;
+  return saveWeapons(it);
 }
 bool CInventory::saveItems(CFileLoaderIt it) const {
   if (it.GetName() != "items") {
@@ -158,11 +144,16 @@ bool CInventory::saveWeapons(CFileLoaderIt it) const {
   for (size_t i = 0; i < m_Inventory.size(); ++i) {
     it.CreateNewChildNode("weapon");
   }
-  it.Child();
+  if (!it.Child()) return false;
   for (auto& elem : m_WeaponInventory) {
-    elem->Save(it);
-    it.Next();
+    if (!elem->Save(it)) {
+      return false;
+    }
+    if (!it.Next()) {
+      return false;
+    }
   }
+  return true;
 }
 bool CInventory::erase(size_t index, invType type) {
   if (type == ITEM) {
@@ -174,6 +165,32 @@ bool CInventory::erase(size_t index, invType type) {
     if (index < m_WeaponInventory.size()) {
       auto it = m_WeaponInventory.begin() + index;
       m_WeaponInventory.erase(it);
+    }
+  }
+  return false;
+}
+bool CInventory::insert(std::unique_ptr<CItem>& item) {
+  if (item->GetSize() + m_CurrSize <= m_Size) {
+    if (item) {
+      m_Inventory.resize(m_Inventory.size() + 1);
+      m_CurrSize += item->GetSize();
+      m_Inventory.back().swap(item);
+      return true;
+    } else {
+      return false;
+    }
+  }
+  return false;
+}
+bool CInventory::insert(std::unique_ptr<CWeapon>& weapon) {
+  if (weapon->GetSize() + m_CurrSize <= m_Size) {
+    if (weapon) {
+      m_WeaponInventory.resize(m_WeaponInventory.size() + 1);
+      m_CurrSize += weapon->GetSize();
+      m_WeaponInventory.back().swap(weapon);
+      return true;
+    } else {
+      return false;
     }
   }
   return false;

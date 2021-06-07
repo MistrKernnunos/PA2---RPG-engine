@@ -32,6 +32,9 @@ std::string CHealthPotion::PrintToString() {
   return message;
 }
 bool CHealthPotion::Effect(CEntity& toEffect, CEntity& user) {
+  if (toEffect.GetHealth() == toEffect.GetMaxHealth()) {
+    return false;
+  };
   int health = toEffect.GetHealth();
   health += m_HealingStrength;
   if (health > toEffect.GetMaxHealth()) {

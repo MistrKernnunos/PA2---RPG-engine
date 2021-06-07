@@ -13,14 +13,6 @@ class CWeapon {
   CWeapon() = default;
 
   /**
-   * applies defensive action of the weapon
-   * @param user entity which uses the weapon
-   * @return true if it was successful, false if not (not enough Action points,
-   * does not have defense mechanism)
-   */
-  virtual bool Defense(std::shared_ptr<CEntity> user) = 0;
-
-  /**
    * performs effect of this item
    * @param toEffect entity which this item effects
    * @param user entity which uses this item
@@ -34,7 +26,7 @@ class CWeapon {
    * @param user entity which uses this weapon
    * @return true if the attack was used successfully
    */
-  virtual bool Attack(CEntity& toAttack, CEntity& user) const = 0;
+  virtual void Attack(CEntity& toAttack, CEntity& user) const = 0;
 
   virtual std::string PrintToString() = 0;
 

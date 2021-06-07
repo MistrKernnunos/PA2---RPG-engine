@@ -4,11 +4,9 @@
 #include "CEntity.h"
 
 #include "CInventory.h"
-#include "CRoom.h"
+#include "CMap.h"
 
 const std::string& CEntity::GetName() const { return m_Name; }
-size_t CEntity::GetHeight() const { return m_Height; }
-size_t CEntity::GetWidth() const { return m_Width; }
 int CEntity::GetMaxHealth() const { return m_MaxHealth; }
 int CEntity::GetHealth() const { return m_Health; }
 int CEntity::GetDefencePower() const { return m_DefencePower; }
@@ -27,7 +25,6 @@ const CInventory& CEntity::GetInventory() const { return m_Inventory; }
 bool CEntity::Load(CFileLoaderIt iterator) {
   if (iterator.GetName() != "entity") {
     throw std::invalid_argument("wrong entity node");
-    return false;
   }
   iterator.Child();
   iterator.Next();
@@ -44,7 +41,6 @@ bool CEntity::Load(CFileLoaderIt iterator) {
 bool CEntity::loadProperties(CFileLoaderIt iterator) {
   if (iterator.GetName() != "properties") {
     throw std::invalid_argument("wrong property node");
-    return false;
   }
   iterator.Child();
   iterator.Next();
@@ -77,7 +73,13 @@ bool CEntity::loadProperties(CFileLoaderIt iterator) {
   return true;
 }
 void CEntity::AttachController(std::shared_ptr<CControler> controler) { m_Controller = controler; }
-bool CEntity::InsertIntoRoom(std::weak_ptr<CRoom> room) { m_Room = room;}
+bool CEntity::InsertIntoRoom(std::weak_ptr<CMap> room) {
+  if (room.lock()) {
+    m_Room = room;
+    return true;
+  }
+  return false;
+}
 
 std::vector<std::shared_ptr<CEntity>> CEntity::GetEntitiesInRange(int range) const {
   return m_Room.lock()->EntitiesInRange(m_Coordinates, range);
@@ -107,12 +109,12 @@ bool CEntity::Save(CFileLoaderIt it) {
   if (!it.CreateNewChildNode("properties")) return false;
   if (!it.CreateNewChildNode("coordinates")) return false;
   if (!it.CreateNewChildNode("inventory")) return false;
-  it.Child();
-  saveProperties(it);
-  it.Next();
-  m_Coordinates.Save(it);
-  it.Next();
-  m_Inventory.Save(it);
+  if (!it.Child()) return false;
+  if (!saveProperties(it)) return false;
+  if (!it.Next()) return false;
+  if (!m_Coordinates.Save(it)) return false;
+  if (!it.Next()) return false;
+  return m_Inventory.Save(it);
 }
 bool CEntity::saveProperties(CFileLoaderIt it) {
   if (it.GetName() != "properties") {
@@ -133,3 +135,4 @@ bool CEntity::saveProperties(CFileLoaderIt it) {
   it.CreateNewTextChildNode("defenseCost", std::to_string(m_DefenseCost));
   return true;
 }
+int CEntity::GetMovement() const { return m_Movement; }

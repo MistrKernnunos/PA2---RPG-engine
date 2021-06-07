@@ -32,6 +32,9 @@ class CInventory {
    */
   bool drop(size_t index, invType type);
 
+  bool insert(std::unique_ptr<CItem>& item);
+  bool insert(std::unique_ptr<CWeapon>& weapon);
+
   /**
    * returns reference to the inventory array
    * @return const reference to inventory array

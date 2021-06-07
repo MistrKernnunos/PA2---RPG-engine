@@ -28,11 +28,6 @@ class CPlayer : public CEntity {
   bool Attack(CEntity& toAttack, const CWeapon& weapon) override;
 
   /**
-   * entity takes enters defense state until start of next turn
-   * @return true if successful, false if not (not enough action points)
-   */
-  bool Defense() override;
-  /**
    * handles action if the entity is attacked
    * @param attackPower attack damage of the incoming attack
    * @return the damage that has the entity received

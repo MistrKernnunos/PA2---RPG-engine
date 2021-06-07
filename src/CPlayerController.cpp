@@ -126,18 +126,31 @@ size_t CPlayerController::chooseEntityToAttack(CEntity& toControl,
     message += std::to_string(coor.X() - myPos.X());
     message += " Y: ";
     message += std::to_string(coor.Y() - myPos.Y());
+    message += "\n";
   }
   size_t res = interface.PromtWithMessage<size_t>(message);
-  if (res >= entitiesToAttack.size()) res = 0;
+  if (res > entitiesToAttack.size()) res = 0;
   return res;
 }
 size_t CPlayerController::chooseWeapon(CEntity& toControl) { return chooseItem(toControl, WEAPON); }
 void CPlayerController::inventory(CEntity& toControl) {
   CInterface interface = CInterfaceLocator::getInterface();
-  interface.Message("Choose item to use");
+  interface.Message("Choose item");
   size_t index = chooseItem(toControl, ITEM);
   if (index != 0) {
-    useItem(toControl, index);
+    index--;
+    int choice = interface.Chooser("Choose what to do\n0) nothing\n1) use\n2) drop", 2);
+    switch (choice) {
+      case 0:
+        return;
+        break;
+      case 1:
+        useItem(toControl, index);
+        break;
+      case 2:
+        dropItem(toControl, index);
+        break;
+    }
   }
 }
 size_t CPlayerController::chooseItem(CEntity& toControl, invType type = ITEM) {
@@ -171,7 +184,11 @@ bool CPlayerController::useItem(CEntity& toControl, size_t index) {
   CInventory& inv(toControl.GetEditableInventory());
   index--;
   auto item = inv.TakeItem(index);
-  return item->Effect(toControl, toControl);
+  if (item->Effect(toControl, toControl)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 void CPlayerController::loot(CEntity& toControl) {
   auto lootable = toControl.GetLootableEntities();
@@ -229,4 +246,8 @@ size_t CPlayerController::chooseEntityToLoot(std::vector<std::shared_ptr<CEntity
   size_t res = interface.PromtWithMessage<size_t>(message);
   if (res >= j) res = 0;
   return res;
+}
+void CPlayerController::dropItem(CEntity& toControl, size_t index) {
+  CInventory& inv(toControl.GetEditableInventory());
+  inv.drop(index, ITEM);
 }

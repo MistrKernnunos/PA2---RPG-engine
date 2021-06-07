@@ -36,7 +36,6 @@ retType CFactory<absClass, identifier, retType, maker>::createObject(const ident
   auto found = m_IdClassCreator.find(id);
   if (found == m_IdClassCreator.end()) {
     throw std::invalid_argument("wrong object type");
-    return nullptr;
   }
   maker creator = found->second;
   retType res = creator();

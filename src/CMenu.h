@@ -10,8 +10,6 @@ class CMenu {
  public:
   CMenu(CInterface& interface) : m_Interface(interface) {}
 
-  bool IsReady();
-
   bool RunMenu(CGame& game);
 
  private:

@@ -13,16 +13,16 @@
 #include "CWall.h"
 #include "EMapElem.h"
 class CGame;
-class CRoom {
+class CMap {
  public:
-  CRoom(int ID, const std::string& name, CGame& game);
-  ~CRoom() = default;
+  CMap(int ID, const std::string& name, CGame& game);
+  ~CMap() = default;
   /**
    * loads room from xml tree
    * @param iterator iterator over xml tree pointing to head of room
    * @return true if succeeded or false
    */
-  bool Load(CFileLoaderIt iterator, std::weak_ptr<CRoom> roomPtr);
+  bool Load(CFileLoaderIt iterator, std::weak_ptr<CMap> roomPtr);
 
   bool Save(CFileLoaderIt it) const;
 
@@ -53,7 +53,7 @@ class CRoom {
 
   //  bool MoveEntity();
 
-  friend std::ostream& operator<<(std::ostream& os, const CRoom& room);
+  friend std::ostream& operator<<(std::ostream& os, const CMap& room);
 
   bool Move(const CCoordinates& start, const CCoordinates& end, int range);
 

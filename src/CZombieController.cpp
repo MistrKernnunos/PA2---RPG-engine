@@ -7,11 +7,17 @@
 #include <random>
 
 #include "CEntity.h"
-enum DIRECTION { HORIZONTAL, VERTICAL };
+#include "CZombie.h"
 
 bool CZombieController::Control(CEntity& toControl) {
-  idleMove(toControl);
-  // todo jak se ma chovat zombie
+  auto & entity = dynamic_cast<CZombie&>(toControl);
+  if (entity.GetAttacked()) {
+    underAttack(toControl);
+  } else {
+    idleMove(toControl);
+  }
+
+  return true;
 }
 // specify length of first tried step
 int CZombieController::m_FirstStep = 3;
@@ -21,25 +27,38 @@ void CZombieController::idleMove(CEntity& toControl) {
   // random number generation init
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distribution(0, 1);
+  std::uniform_int_distribution<> distribution(-1, 1);
   // move vertically or horizontally
-  int x = 0;
-  int y = 0;
-  DIRECTION direction = HORIZONTAL;
-  if (distribution(gen)) {
-    x = m_FirstStep;
-  } else {
-    y = m_FirstStep;
-    direction = VERTICAL;
-  }
-  while (!toControl.Move(x, y)) {
+  int x = distribution(gen) * m_FirstStep;
+  int y = distribution(gen) * m_FirstStep;
+  while (!toControl.Move(x, y) && toControl.GetCurrActionPoints() > toControl.GetMovementCost()) {
     if (1 != std::abs(x)) {
       x += x > 0 ? -1 : 1;
-    } else if (x == 1 and direction == HORIZONTAL) {
-      x = -m_FirstStep;
-    } else if (x == -1) {
-      break;
+      y += y > 0 ? -1 : 1;
+    } else {
+      x = distribution(gen) * m_FirstStep;
+      y = distribution(gen) * m_FirstStep;
     }
   }
 }
-void CZombieController::underAttack(CEntity& toControl) {}
+void CZombieController::underAttack(CEntity& toControl) {
+  auto entities = toControl.GetEntitiesInRange(toControl.GetMovement() * 1.5);
+  if (entities.empty()) {
+    return;
+  }
+  CCoordinates curr = toControl.GetCoordinates();
+  CCoordinates pos = entities.front()->GetCoordinates();
+  int x = pos.X() - curr.X();
+  int y = pos.Y() - curr.Y();
+  x += x > 0 ? -1 : 1;
+  y += y > 0 ? -1 : 1;
+  while (!toControl.Move(x, y) && toControl.GetCurrActionPoints() > toControl.GetMovementCost()) {
+    x += x > 0 ? -1 : 1;
+    y += y > 0 ? -1 : 1;
+  }
+  const CInventory& inv(toControl.GetInventory());
+  auto& weapon = inv.GetWeaponInventory().front();
+  if (weapon) {
+  }
+  toControl.Attack(*entities.front(), *weapon);
+}

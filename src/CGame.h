@@ -12,7 +12,7 @@
 #include "CFileLoader.h"
 #include "CFileLoaderIterator.h"
 #include "CInterface.h"
-class CRoom;
+class CMap;
 class CGame {
  public:
   CGame(const CInterface &interface) : m_Interface(interface){};
@@ -22,11 +22,16 @@ class CGame {
   //  bool LoadGame();
 
   bool LoadMap(const std::string &path);
-
+/**
+ * saves game
+ * @return true if successful
+ */
   bool Save() const;
 
-  bool Start();
-
+  void Start();
+  /**
+   * gives player choice to save game or to end without saving
+   */
   void EndGame();
 
   bool IsInitialized() const;
@@ -46,12 +51,6 @@ class CGame {
   void Render();
 
   /**
-   * creates game
-   * @return true if successful
-   */
-  bool CreateGame();
-
-  /**
    * inserts player on spawn point
    * @param player player to insert
    * @return true if successful, false if not
@@ -63,7 +62,7 @@ class CGame {
   bool saveSpawnPoint(CFileLoaderIt it) const;
 
   CInterface m_Interface;
-  std::map<int, std::shared_ptr<CRoom>> m_Rooms;
+  std::map<int, std::shared_ptr<CMap>> m_Rooms;
   int m_spawnRoomID = 0;
   std::string m_Name;
   CCoordinates m_SpawnPoint;

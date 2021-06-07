@@ -17,12 +17,10 @@ CDoor CDoor::LoadDoor(CFileLoaderIt iterator) {
 bool CDoor::Load(CFileLoaderIt iterator) {
   if (iterator.GetName() != "door") {
     throw std::invalid_argument("wrong node");
-    return false;
   }
   auto prop = iterator.GetProperties();
   if (prop.front().first != "IDroom") {
     throw std::invalid_argument("wrong properties");
-    return false;
   }
   m_DestRoom = std::stoi(prop.front().second);
   iterator.Child();  // move to  coordinate

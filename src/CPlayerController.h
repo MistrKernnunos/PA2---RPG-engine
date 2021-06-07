@@ -29,4 +29,5 @@ class CPlayerController : public CControler {
   bool useItem(CEntity& toControl, size_t index);
   void loot(CEntity& toControl);
   size_t chooseEntityToLoot(std::vector<std::shared_ptr<CEntity>>& entities, CEntity& toControl);
+  void dropItem(CEntity & toControl,size_t index);
 };

@@ -4,7 +4,7 @@
 #include "CZombie.h"
 
 #include "CInterfaceLocator.h"
-#include "CRoom.h"
+#include "CMap.h"
 std::shared_ptr<CEntity> CZombie::Create() { return std::make_shared<CZombie>(); }
 
 CZombie::CZombie() { m_Apperance = "\33[105mZ\33[0m"; }
@@ -32,16 +32,13 @@ int CZombie::Attacked(const int attackDamage) {
   }
   return damage;
 }
-bool CZombie::Defense() {
-  return false;
-  // todo
-}
 bool CZombie::Turn() {
   if (m_State == ALIVE) {
     m_CurrActionPoints = m_ActionPoints;
     m_Controller->Control(*this);
+    m_Attacked = false;
   }
-  m_Attacked = false;
+  return true;
 }
 
 bool CZombie::Move(const int x, const int y) {

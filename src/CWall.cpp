@@ -50,7 +50,6 @@ CWall CWall::LoadWall(CFileLoaderIt it) {
 bool CWall::Load(CFileLoaderIt iterator) {
   if (iterator.GetName() != "wall") {
     throw std::invalid_argument("wrong node");
-    return false;
   }
   iterator.Child();  // move to coordinates node
   iterator.Next();
@@ -58,7 +57,6 @@ bool CWall::Load(CFileLoaderIt iterator) {
   auto prop = iterator.GetProperties();
   if (prop.front().first != "name" || prop.front().second != "start") {
     throw std::invalid_argument("wrong node");
-    return false;
   }
   m_Start = CCoordinates::LoadCoordinates(iterator);
   prop.erase(prop.begin(), prop.end());
@@ -69,14 +67,12 @@ bool CWall::Load(CFileLoaderIt iterator) {
   prop = iterator.GetProperties();
   if (prop.front().first != "name" || prop.front().second != "end") {
     throw std::invalid_argument("wrong node");
-    return false;
   }
   m_End = CCoordinates::LoadCoordinates(iterator);
 
   //-----validate wall----
   if (m_Start.X() != m_End.X() && m_Start.Y() != m_End.Y()) {
     throw std::invalid_argument("wall is not straight");
-    return false;
   }
   //---asses direction----
   if (m_Start.X() == m_End.X()) {

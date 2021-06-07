@@ -7,20 +7,20 @@
 #include "CInterface.h"
 #include "CPlayerCreator.h"
 bool CMenu::RunMenu(CGame& game) {
-  std::string message = "1) load game\n2) create game\n";
+  std::string message = "1) load game\n2) create game\n3) quit";
   bool state = false;
 
   while (!state) {
-    int res = m_Interface.PromtWithMessage<int>(message);
-    if (res > 0 && res <= 2) {
-      state = true;
-    }
+    int res = m_Interface.Chooser(message, 3);
     switch (res) {
       case 1:
         state = loadMap(game);
         break;
       case 2:
         state = createGame(game);
+        break;
+      case 3:
+        return false;
         break;
       default:
         m_Interface.Message("Wrong options, choose again!");
@@ -49,6 +49,8 @@ bool CMenu::createGame(CGame& game) {
   CPlayerCreator creator;
   auto player = creator.Create();
   m_Interface.Message("Then you need to load map");
-  loadMap(game);
-  game.SpawnPlayer(player);
+  if (!loadMap(game)) {
+    return false;
+  }
+  return game.SpawnPlayer(player);
 }

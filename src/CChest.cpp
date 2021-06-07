@@ -16,9 +16,6 @@ int CChest::Attacked(const int attackDamage) {
   return -1;  // chest cant be attacked
 }
 
-bool CChest::Defense() {
-  return false;  // chest cant enter defense state
-}
 std::shared_ptr<CEntity> CChest::Create() { return std::make_shared<CChest>(); }
 
 bool CChest::Move(const int x, const int y) {

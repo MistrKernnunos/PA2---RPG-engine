@@ -2,13 +2,12 @@
 // Created by machavi on 5/7/21.
 //
 #define LOOT_RANGE 5
-#include "CRoom.h"
-
 #include <queue>
 #include <set>
 
 #include "CGame.h"
-bool CRoom::Load(CFileLoaderIt iterator, std::weak_ptr<CRoom> roomPtr) {
+#include "CMap.h"
+bool CMap::Load(CFileLoaderIt iterator, std::weak_ptr<CMap> roomPtr) {
   if (iterator.GetName() != "room") {
     throw std::invalid_argument("wrong node");
   }
@@ -32,14 +31,10 @@ bool CRoom::Load(CFileLoaderIt iterator, std::weak_ptr<CRoom> roomPtr) {
   if (!checkPerimeter()) return false;         // checks whether perimeter walls create continuous shape
   if (!iterator.Next()) return false;          // move to text node
   if (!iterator.Next()) return false;          // move to perimeter node
-  if (!loadInner(iterator))
-    return false;                      // load inner walls
-                                       //  if (!iterator.Next()) return false;          // move to text node
-                                       //  if (!iterator.Next()) return false;          // move to doors node
-                                       //  if (!loadDoors(iterator)) return false;      // load doors
-  CEntityLoader entityLoader;          // init entity loader
-  if (!iterator.Next()) return false;  // move to text node
-  if (!iterator.Next()) return false;  // move to doors node
+  if (!loadInner(iterator)) return false;      // load inner walls
+  CEntityLoader entityLoader;                  // init entity loader
+  if (!iterator.Next()) return false;          // move to text node
+  if (!iterator.Next()) return false;          // move to doors node
   m_Entities = entityLoader.LoadEntities(iterator);
   for (auto& elem : m_Entities) {
     elem.second->InsertIntoRoom(roomPtr);
@@ -48,7 +43,7 @@ bool CRoom::Load(CFileLoaderIt iterator, std::weak_ptr<CRoom> roomPtr) {
   return true;
 }
 
-bool CRoom::loadPerimeter(CFileLoaderIt iterator) {
+bool CMap::loadPerimeter(CFileLoaderIt iterator) {
   if (iterator.GetName() != "perimeter") {
     throw std::invalid_argument("wrong node");
   }
@@ -62,7 +57,7 @@ bool CRoom::loadPerimeter(CFileLoaderIt iterator) {
   }
   return true;
 }
-bool CRoom::loadInner(CFileLoaderIt iterator) {
+bool CMap::loadInner(CFileLoaderIt iterator) {
   if (iterator.GetName() != "inner") {
     throw std::invalid_argument("wrong node");
   }
@@ -77,7 +72,7 @@ bool CRoom::loadInner(CFileLoaderIt iterator) {
   return true;
 }
 
-bool CRoom::checkPerimeter() {
+bool CMap::checkPerimeter() {
   if (!perimeterWalls.front()->Connects(*perimeterWalls.back())) {
     return false;
   }
@@ -90,7 +85,7 @@ bool CRoom::checkPerimeter() {
   return true;
 }
 
-bool CRoom::loadDoors(CFileLoaderIt iterator) {
+bool CMap::loadDoors(CFileLoaderIt iterator) {
   if (iterator.GetName() != "doors") {
     throw std::invalid_argument("wrong node");
   }
@@ -103,7 +98,7 @@ bool CRoom::loadDoors(CFileLoaderIt iterator) {
   }
   return true;
 }
-std::ostream& operator<<(std::ostream& os, const CRoom& room) {
+std::ostream& operator<<(std::ostream& os, const CMap& room) {
   std::vector<std::vector<std::string>> outputBuffer;
   std::string floor = "\33[47m \33[0m";
 
@@ -130,7 +125,7 @@ std::ostream& operator<<(std::ostream& os, const CRoom& room) {
   }
   return os;
 }
-bool CRoom::Move(const CCoordinates& start, const CCoordinates& end, int range) {
+bool CMap::Move(const CCoordinates& start, const CCoordinates& end, int range) {
   int x = end.X();
   int y = end.Y();
   if (x >= m_Width || x < 0 || y >= m_Heigth || y < 0 || m_Map.at(y).at(x) == EMapElem::ENTITY) {
@@ -177,18 +172,19 @@ bool CRoom::Move(const CCoordinates& start, const CCoordinates& end, int range) 
   return false;
 }
 
-bool CRoom::ExecuteTurns() {
+bool CMap::ExecuteTurns() {
   for (auto& elem : m_Entities) {
     if (!elem.second->Turn()) {
       return false;
     }
-  };
+  }
+  return true;
 }
-void CRoom::Render() { m_Game.Render(); }
+void CMap::Render() { m_Game.Render(); }
 
-CRoom::CRoom(int ID, const std::string& name, CGame& game) : m_ID(ID), m_Name(name), m_Game(game) {}
+CMap::CMap(int ID, const std::string& name, CGame& game) : m_ID(ID), m_Name(name), m_Game(game) {}
 
-void CRoom::exportToMap() {
+void CMap::exportToMap() {
   //----export walls to map---
   for (auto& elem : perimeterWalls) {
     elem->ExportToMap(m_Map);
@@ -212,11 +208,11 @@ void CRoom::exportToMap() {
     m_Map.at(coordinate.Y()).at(coordinate.X()) = EMapElem::ENTITY;
   }
 }
-std::vector<std::shared_ptr<CEntity>> CRoom::EntitiesInRange(const CCoordinates& pos, int range) const {
+std::vector<std::shared_ptr<CEntity>> CMap::EntitiesInRange(const CCoordinates& pos, int range) const {
   std::vector<std::shared_ptr<CEntity>> res;
   std::vector<CCoordinates> resCoordinates;
   // CCordinates and range from start pos
-  std::queue<std::pair<CCoordinates, size_t>> toVisit;
+  std::queue<std::pair<CCoordinates, int>> toVisit;
   std::set<CCoordinates> visited;
   toVisit.push(std::make_pair(pos, 0));
   visited.insert(pos);
@@ -256,16 +252,16 @@ std::vector<std::shared_ptr<CEntity>> CRoom::EntitiesInRange(const CCoordinates&
   }
   return res;
 }
-EMapElem CRoom::isAtPosition(const CCoordinates& pos) const {
+EMapElem CMap::isAtPosition(const CCoordinates& pos) const {
   int x = pos.X();
   int y = pos.Y();
 
   if (x >= m_Width || x < 0 || y >= m_Heigth || y < 0) {
     return EMapElem::FLOOR;
-  };
+  }
   return m_Map.at(y).at(x);
 }
-std::vector<std::shared_ptr<CEntity>> CRoom::GetLootableEntities(const CCoordinates& pos) const {
+std::vector<std::shared_ptr<CEntity>> CMap::GetLootableEntities(const CCoordinates& pos) const {
   std::vector<std::shared_ptr<CEntity>> entitiesInRange;
   std::vector<std::shared_ptr<CEntity>> res;
 
@@ -277,7 +273,7 @@ std::vector<std::shared_ptr<CEntity>> CRoom::GetLootableEntities(const CCoordina
   }
   return res;
 }
-bool CRoom::Save(CFileLoaderIt it) const {
+bool CMap::Save(CFileLoaderIt it) const {
   if (it.GetName() != "room") {
     return false;
   }
@@ -289,15 +285,15 @@ bool CRoom::Save(CFileLoaderIt it) const {
   it.CreateNewChildNode("perimeter");
   it.CreateNewChildNode("inner");
   it.CreateNewChildNode("entities");
-  it.Child();
+  if (!it.Child()) return false;
   saveWalls(it, perimeterWalls);
-  it.Next();
+  if (!it.Next()) return false;
   saveWalls(it, innerWalls);
-  it.Next();
-  saveEntities(it);
+  if (!it.Next()) return false;
+  return saveEntities(it);
 }
 
-bool CRoom::saveWalls(CFileLoaderIt it, const std::vector<std::unique_ptr<CWall>>& walls) const {
+bool CMap::saveWalls(CFileLoaderIt it, const std::vector<std::unique_ptr<CWall>>& walls) const {
   for (size_t i = 0; i < walls.size(); ++i) {
     it.CreateNewChildNode("wall");
   }
@@ -308,7 +304,7 @@ bool CRoom::saveWalls(CFileLoaderIt it, const std::vector<std::unique_ptr<CWall>
   }
   return true;
 }
-bool CRoom::saveEntities(CFileLoaderIt it) const {
+bool CMap::saveEntities(CFileLoaderIt it) const {
   if (it.GetName() != "entities") {
     return false;
   }
@@ -317,11 +313,14 @@ bool CRoom::saveEntities(CFileLoaderIt it) const {
   }
   it.Child();
   for (auto& elem : m_Entities) {
-    elem.second->Save(it);
-    it.Next();
+    if (!elem.second->Save(it)) {
+      return false;
+    }
+    if (!it.Next()) return false;
   }
+  return true;
 }
-bool CRoom::TransferEntityToRoom(std::shared_ptr<CEntity> entity, const CCoordinates& spawnPoint) {
+bool CMap::TransferEntityToRoom(std::shared_ptr<CEntity> entity, const CCoordinates& spawnPoint) {
   if (m_Map.at(spawnPoint.Y()).at(spawnPoint.X()) != EMapElem::FLOOR) {
     throw std::invalid_argument("entity cant be on top another");
   }

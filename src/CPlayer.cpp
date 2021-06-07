@@ -4,18 +4,13 @@
 #include "CPlayer.h"
 
 #include "CInterfaceLocator.h"
-#include "CRoom.h"
+#include "CMap.h"
 
 bool CPlayer::Attack(CEntity& toAttack, const CWeapon& weapon) {
   if (m_CurrActionPoints >= m_AttackCost) {
     weapon.Attack(toAttack, *this);
     return true;
   }
-  return false;
-}
-
-bool CPlayer::Defense() {
-  // todo
   return false;
 }
 

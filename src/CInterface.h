@@ -24,6 +24,14 @@ class CInterface {
   template <class T>
   std::ostream& Print(const T& toPrint);
 
+  /**
+   * shows user message and expects number input from 0 to number of choices
+   * @param message message to show
+   * @param numberOfChoices number of choices user has
+   * @return chosen choice
+   */
+  int Chooser(const std::string& message, int numberOfChoices);
+
  private:
   std::ostream& m_Out;
   std::istream& m_In;

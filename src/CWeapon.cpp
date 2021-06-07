@@ -7,7 +7,6 @@
 bool CWeapon::Load(CFileLoaderIt it) {
   if (it.GetName() != "weapon") {
     throw std::invalid_argument("wrong item node");
-    return false;
   }
   if (!it.Child()) return false;
   if (!it.Next()) return false;
@@ -41,5 +40,5 @@ bool CWeapon::Save(CFileLoaderIt it) const {
   if (!it.CreateNewTextChildNode("range", std::to_string(m_Range))) return false;
   if (!it.CreateNewTextChildNode("attackPower", std::to_string(m_AttackPower))) return false;
   if (!it.CreateNewTextChildNode("defensePower", std::to_string(m_DefensePower))) return false;
-  if (!it.CreateNewTextChildNode("size", std::to_string(m_Size))) return false;
+  return it.CreateNewTextChildNode("size", std::to_string(m_Size));
 }
