@@ -9,6 +9,7 @@
 bool CPlayer::Attack(CEntity& toAttack, const CWeapon& weapon) {
   if (m_CurrActionPoints >= m_AttackCost) {
     weapon.Attack(toAttack, *this);
+    m_CurrActionPoints -= m_AttackCost;
     return true;
   }
   return false;

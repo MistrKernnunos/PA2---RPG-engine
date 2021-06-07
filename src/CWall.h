@@ -43,7 +43,8 @@ class CWall {
   static CWall LoadWall(CFileLoaderIt it);
   bool Load(CFileLoaderIt it);
   bool Save(CFileLoaderIt it);
-
+  const CCoordinates& GetStart() const;
+  const CCoordinates& GetEnd() const;
   void PrintToBuffer(std::vector<std::vector<std::string>>& outputBuffer, const std::string& floor);
 
   void ExportToMap(std::vector<std::vector<EMapElem>>& map);

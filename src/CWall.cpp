@@ -167,3 +167,5 @@ bool CWall::Save(CFileLoaderIt it) {
   it.AddProperties(propList);
   return m_End.Save(it);
 }
+const CCoordinates& CWall::GetStart() const { return m_Start; }
+const CCoordinates& CWall::GetEnd() const { return m_End; }

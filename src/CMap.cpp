@@ -2,12 +2,14 @@
 // Created by machavi on 5/7/21.
 //
 #define LOOT_RANGE 5
+#include "CMap.h"
+
 #include <queue>
 #include <set>
 
 #include "CGame.h"
-#include "CMap.h"
-bool CMap::Load(CFileLoaderIt iterator, std::weak_ptr<CMap> roomPtr) {
+#include "CInterfaceLocator.h"
+bool CMap::Load(CFileLoaderIt iterator, std::weak_ptr<CMap> mapPtr) {
   if (iterator.GetName() != "room") {
     throw std::invalid_argument("wrong node");
   }
@@ -37,7 +39,8 @@ bool CMap::Load(CFileLoaderIt iterator, std::weak_ptr<CMap> roomPtr) {
   if (!iterator.Next()) return false;          // move to doors node
   m_Entities = entityLoader.LoadEntities(iterator);
   for (auto& elem : m_Entities) {
-    elem.second->InsertIntoRoom(roomPtr);
+    elem.second->InsertIntoMap(mapPtr);
+    m_EntitiesVector.push_back(elem.second);
   }
   exportToMap();
   return true;
@@ -54,6 +57,10 @@ bool CMap::loadPerimeter(CFileLoaderIt iterator) {
 #endif
   for (; iterator.Valid(); iterator.Next(), iterator.Next()) {
     perimeterWalls.push_back(std::make_unique<CWall>(CWall::LoadWall(iterator)));
+    m_Heigth = std::max(m_Heigth, perimeterWalls.back()->GetEnd().Y() + 1);
+    m_Width = std::max(m_Width, perimeterWalls.back()->GetEnd().X() + 1);
+    m_Heigth = std::max(m_Heigth, perimeterWalls.back()->GetStart().Y() + 1);
+    m_Width = std::max(m_Width, perimeterWalls.back()->GetStart().X() + 1);
   }
   return true;
 }
@@ -68,6 +75,10 @@ bool CMap::loadInner(CFileLoaderIt iterator) {
 #endif
   for (; iterator.Valid(); iterator.Next(), iterator.Next()) {
     innerWalls.push_back(std::make_unique<CWall>(CWall::LoadWall(iterator)));
+    if (innerWalls.back()->GetStart().X() > m_Width || innerWalls.back()->GetEnd().X() > m_Width ||
+        innerWalls.back()->GetEnd().Y() > m_Heigth || innerWalls.back()->GetStart().Y() > m_Heigth) {
+      throw std::invalid_argument("inner wall outside perimeter");
+    }
   }
   return true;
 }
@@ -85,19 +96,6 @@ bool CMap::checkPerimeter() {
   return true;
 }
 
-bool CMap::loadDoors(CFileLoaderIt iterator) {
-  if (iterator.GetName() != "doors") {
-    throw std::invalid_argument("wrong node");
-  }
-  // move to door node
-  iterator.Child();
-  iterator.Next();
-  // load doors
-  for (; iterator.Valid(); iterator.Next(), iterator.Next()) {
-    m_Doors.push_back(std::make_unique<CDoor>(CDoor::LoadDoor(iterator)));
-  }
-  return true;
-}
 std::ostream& operator<<(std::ostream& os, const CMap& room) {
   std::vector<std::vector<std::string>> outputBuffer;
   std::string floor = "\33[47m \33[0m";
@@ -173,8 +171,12 @@ bool CMap::Move(const CCoordinates& start, const CCoordinates& end, int range) {
 }
 
 bool CMap::ExecuteTurns() {
-  for (auto& elem : m_Entities) {
-    if (!elem.second->Turn()) {
+  for (auto& elem : m_EntitiesVector) {
+    std::string message = elem->GetName();
+    message += "'s turn";
+    CInterfaceLocator::getInterface().Message(message);
+    Render();
+    if (!elem->Turn()) {
       return false;
     }
   }

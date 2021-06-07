@@ -7,10 +7,11 @@
 #include <random>
 
 #include "CEntity.h"
+#include "CInterfaceLocator.h"
 #include "CZombie.h"
 
 bool CZombieController::Control(CEntity& toControl) {
-  auto & entity = dynamic_cast<CZombie&>(toControl);
+  auto& entity = dynamic_cast<CZombie&>(toControl);
   if (entity.GetAttacked()) {
     underAttack(toControl);
   } else {

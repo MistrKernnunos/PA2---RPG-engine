@@ -20,7 +20,7 @@ void CEntity::PrintToBuffer(std::vector<std::vector<std::string>>& outputBuffer)
 }
 const CInventory& CEntity::GetInventory() const { return m_Inventory; }
 
-// bool CEntity::InsertIntoRoom(std::shared_ptr<CRoom> room) { return false; }
+// bool CEntity::InsertIntoMap(std::shared_ptr<CRoom> room) { return false; }
 
 bool CEntity::Load(CFileLoaderIt iterator) {
   if (iterator.GetName() != "entity") {
@@ -73,7 +73,7 @@ bool CEntity::loadProperties(CFileLoaderIt iterator) {
   return true;
 }
 void CEntity::AttachController(std::shared_ptr<CControler> controler) { m_Controller = controler; }
-bool CEntity::InsertIntoRoom(std::weak_ptr<CMap> room) {
+bool CEntity::InsertIntoMap(std::weak_ptr<CMap> room) {
   if (room.lock()) {
     m_Room = room;
     return true;

@@ -45,7 +45,7 @@ bool CZombie::Move(const int x, const int y) {
   CCoordinates end(m_Coordinates.X() + x, m_Coordinates.Y() + y);
   if (m_Room.lock()->Move(m_Coordinates, end, m_Movement) && m_CurrActionPoints >= m_MovementCost) {
     m_Coordinates = end;
-    m_Room.lock()->Render();
+//    m_Room.lock()->Render();
     m_CurrActionPoints -= m_MovementCost;
     return true;
   }

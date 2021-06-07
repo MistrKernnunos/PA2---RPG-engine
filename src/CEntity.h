@@ -89,7 +89,7 @@ class CEntity {
   int GetDefenseConst() const;
   state GetState() const;
   int GetMovement() const;
-  bool InsertIntoRoom(std::weak_ptr<CMap> room);
+  bool InsertIntoMap(std::weak_ptr<CMap> room);
   void SetHealth(int mHealth);
   //  CInventory& GetInventory();
 

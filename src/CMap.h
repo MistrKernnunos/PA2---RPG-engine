@@ -36,7 +36,7 @@ class CMap {
    * @param doorNumber number of door to which entity arrives
    * @return true if succeeded, else if not
    */
-    bool TransferEntityToRoom(std::shared_ptr<CEntity> entity, const CCoordinates& spawnpoint);
+  bool TransferEntityToRoom(std::shared_ptr<CEntity> entity, const CCoordinates& spawnpoint);
   /**
    * transfers entity from this room to dest room
    * @param dest room where to transfer the entity
@@ -69,6 +69,7 @@ class CMap {
   std::vector<std::vector<EMapElem>> m_Map;
   // entities present in the room and their coordinates
   std::map<CCoordinates, std::shared_ptr<CEntity>> m_Entities;
+  std::vector<std::shared_ptr<CEntity>> m_EntitiesVector;
   // index is door which this connection belong to,
   // pointer to room which connect and door number
   std::vector<std::unique_ptr<CDoor>> m_Doors;
@@ -98,12 +99,6 @@ class CMap {
    * @return returns true if the the walls create single shape
    */
   bool checkPerimeter();
-  /**
-   * loads doors to this room
-   * @param iterator pointing to door section
-   * @return true if successful, false if not
-   */
-  bool loadDoors(CFileLoaderIt iterator);
 
   bool saveWalls(CFileLoaderIt it, const std::vector<std::unique_ptr<CWall>>& walls) const;
 

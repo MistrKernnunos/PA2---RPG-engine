@@ -94,7 +94,6 @@ void CGame::Render() {
 }
 void CGame::Start() {
   while (m_Rooms.at(m_CurrRoomID)->ExecuteTurns()) {
-    Render();
   }
     EndGame();
 }

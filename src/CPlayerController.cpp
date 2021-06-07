@@ -10,9 +10,6 @@
 #include "CPlayer.h"
 bool CPlayerController::Control(CEntity& toControl) {
   CInterface interface = CInterfaceLocator::getInterface();
-  std::string message = toControl.GetName();
-  message += "'s turn";
-  interface.Message(message);
   while (toControl.GetCurrActionPoints() > 0 && toControl.GetState() == ALIVE) {
     int res = showActions(toControl);
     switch (res) {
@@ -138,7 +135,6 @@ void CPlayerController::inventory(CEntity& toControl) {
   interface.Message("Choose item");
   size_t index = chooseItem(toControl, ITEM);
   if (index != 0) {
-    index--;
     int choice = interface.Chooser("Choose what to do\n0) nothing\n1) use\n2) drop", 2);
     switch (choice) {
       case 0:
@@ -187,6 +183,7 @@ bool CPlayerController::useItem(CEntity& toControl, size_t index) {
   if (item->Effect(toControl, toControl)) {
     return true;
   } else {
+    inv.insert(item);
     return false;
   }
 }
