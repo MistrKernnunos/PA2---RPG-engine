@@ -29,7 +29,7 @@ class CEntity {
   /**
    * executes one turn
    */
-  virtual void Turn() = 0;
+  virtual bool Turn() = 0;
 
   /**
    * Facilitates attack action
@@ -124,7 +124,7 @@ class CEntity {
   int m_Movement = 0;
   int m_MovementCost = 0;
   int m_AttackCost = 0;
-  int m_DefenseConst = 0;
+  int m_DefenseCost = 0;
   int m_ActionPoints = 0;
 
   // current stats of the entity

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "CCoordinates.h"
+#include "CEntity.h"
 #include "CFileLoader.h"
 #include "CFileLoaderIterator.h"
 #include "CInterface.h"
@@ -26,6 +27,8 @@ class CGame {
 
   bool Start();
 
+  void EndGame();
+
   bool IsInitialized() const;
 
   void Erase();
@@ -37,7 +40,23 @@ class CGame {
    * @return true if it can be traversed in range steps or false if not
    */
 
+  /**
+   * renders game on screen
+   */
   void Render();
+
+  /**
+   * creates game
+   * @return true if successful
+   */
+  bool CreateGame();
+
+  /**
+   * inserts player on spawn point
+   * @param player player to insert
+   * @return true if successful, false if not
+   */
+  bool SpawnPlayer(std::shared_ptr<CEntity> player);
 
  private:
   bool loadSpawnPoint(CFileLoaderIt it);

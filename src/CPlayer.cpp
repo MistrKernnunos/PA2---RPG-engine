@@ -26,7 +26,7 @@ int CPlayer::Attacked(const int attackDamage) {
   if (m_Health <= 0) {
     m_State = DEAD;
     m_Lootable = true;
-    CInterface interface = CInterfaceLocator::getInerface();
+    CInterface interface = CInterfaceLocator::getInterface();
     std::string message = GetName();
     message += " died.";
     interface.Message(message);
@@ -45,11 +45,12 @@ bool CPlayer::Move(const int x, const int y) {
   return false;
 }
 
-void CPlayer::Turn() {
+bool CPlayer::Turn() {
   if (m_State == ALIVE) {
     m_CurrActionPoints = m_ActionPoints;
-    m_Controller->Control(*this);
+    return m_Controller->Control(*this);
   }
+  return false;
 }
 std::shared_ptr<CEntity> CPlayer::Create() { return std::make_shared<CPlayer>(); }
 CPlayer::CPlayer() { m_Apperance = "\33[105mP\33[0m"; }

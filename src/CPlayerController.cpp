@@ -8,8 +8,11 @@
 #include "CInterfaceLocator.h"
 #include "CItem.h"
 #include "CPlayer.h"
-void CPlayerController::Control(CEntity& toControl) {
-  CInterface interface = CInterfaceLocator::getInerface();
+bool CPlayerController::Control(CEntity& toControl) {
+  CInterface interface = CInterfaceLocator::getInterface();
+  std::string message = toControl.GetName();
+  message += "'s turn";
+  interface.Message(message);
   while (toControl.GetCurrActionPoints() > 0 && toControl.GetState() == ALIVE) {
     int res = showActions(toControl);
     switch (res) {
@@ -25,12 +28,22 @@ void CPlayerController::Control(CEntity& toControl) {
       case 4:
         loot(toControl);
         break;
+      case 5:
+        return true;
+        break;
+      case 6:
+        return false;
+        break;
       default:
         interface.Message("Wrong option,choose again.");
         break;
     }
   }
   interface.Message("End of your turn");
+  if (toControl.GetState() == DEAD) {
+    return false;
+  }
+  return true;
 }
 std::shared_ptr<CControler> CPlayerController::Create() { return std::make_shared<CPlayerController>(); }
 
@@ -39,16 +52,20 @@ int CPlayerController::showActions(CEntity& toControl) {
   actions += std::to_string(toControl.GetMovementCost()) += "\n";
   actions += "2)attack cost: ";
   actions += std::to_string(toControl.GetAttackCost()) += "\n";
+  actions += "3)inventory\n";
+  actions += "4)loot\n";
+  actions += "5)end turn\n";
+  actions += "6)end game\n";
   actions += "Current action points: ";
   actions += std::to_string(toControl.GetCurrActionPoints());
   actions += " Current health: ";
   actions += std::to_string(toControl.GetHealth());
 
-  CInterface interface = CInterfaceLocator::getInerface();
+  CInterface interface = CInterfaceLocator::getInterface();
   bool state = false;
   while (!state) {
     int res = interface.PromtWithMessage<int>(actions);
-    if (res > 0 && res <= 4) {
+    if (res > 0 && res <= 6) {
       state = true;
       return res;
     } else {
@@ -59,7 +76,7 @@ int CPlayerController::showActions(CEntity& toControl) {
   return 0;
 }
 void CPlayerController::move(CEntity& toControl) {
-  CInterface interface = CInterfaceLocator::getInerface();
+  CInterface interface = CInterfaceLocator::getInterface();
   int x = interface.PromtWithMessage<int>("where do you want to move on X");
   int y = interface.PromtWithMessage<int>("where do you want to move on y");
   if (!toControl.Move(x, y)) {
@@ -67,7 +84,7 @@ void CPlayerController::move(CEntity& toControl) {
   }
 }
 void CPlayerController::attack(CEntity& toControl) {
-  CInterface interface = CInterfaceLocator::getInerface();
+  CInterface interface = CInterfaceLocator::getInterface();
   const CInventory& inventory(toControl.GetInventory());
   size_t weaponIndex = chooseWeapon(toControl);
   if (weaponIndex == 0) {
@@ -90,7 +107,7 @@ void CPlayerController::attack(CEntity& toControl) {
 }
 size_t CPlayerController::chooseEntityToAttack(CEntity& toControl,
                                                std::vector<std::shared_ptr<CEntity>>& entitiesToAttack) {
-  CInterface interface = CInterfaceLocator::getInerface();
+  CInterface interface = CInterfaceLocator::getInterface();
   CCoordinates myPos = toControl.GetCoordinates();
   std::string message;
   message += "Choose who do you want to attack!\n";
@@ -116,7 +133,7 @@ size_t CPlayerController::chooseEntityToAttack(CEntity& toControl,
 }
 size_t CPlayerController::chooseWeapon(CEntity& toControl) { return chooseItem(toControl, WEAPON); }
 void CPlayerController::inventory(CEntity& toControl) {
-  CInterface interface = CInterfaceLocator::getInerface();
+  CInterface interface = CInterfaceLocator::getInterface();
   interface.Message("Choose item to use");
   size_t index = chooseItem(toControl, ITEM);
   if (index != 0) {
@@ -124,7 +141,7 @@ void CPlayerController::inventory(CEntity& toControl) {
   }
 }
 size_t CPlayerController::chooseItem(CEntity& toControl, invType type = ITEM) {
-  CInterface interface = CInterfaceLocator::getInerface();
+  CInterface interface = CInterfaceLocator::getInterface();
   const CInventory& inv(toControl.GetInventory());
   size_t j = 1;
   std::string message = "0) no item\n";
@@ -158,7 +175,7 @@ bool CPlayerController::useItem(CEntity& toControl, size_t index) {
 }
 void CPlayerController::loot(CEntity& toControl) {
   auto lootable = toControl.GetLootableEntities();
-  CInterface interface = CInterfaceLocator::getInerface();
+  CInterface interface = CInterfaceLocator::getInterface();
   if (lootable.size() == 0) {
     interface.Message("No entities to loot");
     return;
@@ -190,7 +207,7 @@ void CPlayerController::loot(CEntity& toControl) {
   }
 }
 size_t CPlayerController::chooseEntityToLoot(std::vector<std::shared_ptr<CEntity>>& entities, CEntity& toControl) {
-  CInterface interface = CInterfaceLocator::getInerface();
+  CInterface interface = CInterfaceLocator::getInterface();
   std::string message = "Choose who do you want to loot!\n";
   CCoordinates myPos = toControl.GetCoordinates();
   size_t j = 1;

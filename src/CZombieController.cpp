@@ -9,7 +9,7 @@
 #include "CEntity.h"
 enum DIRECTION { HORIZONTAL, VERTICAL };
 
-void CZombieController::Control(CEntity& toControl) {
+bool CZombieController::Control(CEntity& toControl) {
   idleMove(toControl);
   // todo jak se ma chovat zombie
 }

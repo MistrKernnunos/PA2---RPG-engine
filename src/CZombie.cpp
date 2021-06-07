@@ -25,7 +25,7 @@ int CZombie::Attacked(const int attackDamage) {
   if (m_Health <= 0) {
     m_State = DEAD;
     m_Lootable = true;
-    CInterface interface = CInterfaceLocator::getInerface();
+    CInterface interface = CInterfaceLocator::getInterface();
     std::string message = GetName();
     message += " died.";
     interface.Message(message);
@@ -36,7 +36,7 @@ bool CZombie::Defense() {
   return false;
   // todo
 }
-void CZombie::Turn() {
+bool CZombie::Turn() {
   if (m_State == ALIVE) {
     m_CurrActionPoints = m_ActionPoints;
     m_Controller->Control(*this);

@@ -5,14 +5,15 @@
 #include "CInterface.h"
 #include "CInterfaceLocator.h"
 #include "CMenu.h"
+#include "CPlayerCreator.h"
 int main() {
   CInterface interface(std::cout, std::cin);
   CInterfaceLocator::provide(&interface);
-  CGame game(interface);
-  CMenu menu(interface);
-  menu.RunMenu(game);
-  //  game.Start();
-  game.Save();
+    CGame game(interface);
+    CMenu menu(interface);
+    menu.RunMenu(game);
+    game.Start();
+    game.Save();
 
   //  std::list<std::pair<std::string, std::string>> propList;
   //  propList.push_back(std::make_pair("ID", "666"));

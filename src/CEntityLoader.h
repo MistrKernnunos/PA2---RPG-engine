@@ -15,6 +15,7 @@ class CEntityLoader {
  public:
   CEntityLoader();
   std::map<CCoordinates, std::shared_ptr<CEntity>> LoadEntities(CFileLoaderIt iterator);
+  std::shared_ptr<CEntity> CreateEntity(const std::string& id);
 
  private:
   CFactory<CEntity, std::string> m_EntityFactory;

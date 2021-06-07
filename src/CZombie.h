@@ -17,7 +17,7 @@ class CZombie : public CEntity {
   /**
    * executes one turn
    */
-  void Turn() override;
+  bool Turn() override;
 
   /**
    * Facilitates attack action

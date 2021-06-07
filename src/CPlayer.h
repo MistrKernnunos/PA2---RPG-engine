@@ -8,6 +8,7 @@
 class CPlayer : public CEntity {
  public:
   CPlayer();
+  ~CPlayer() = default;
 
  private:
   bool addEntityId(CFileLoaderIt it) override;
@@ -16,7 +17,7 @@ class CPlayer : public CEntity {
   /**
    * executes one turn
    */
-  void Turn() override;
+  bool Turn() override;
 
   /**
    * Facilitates attack action

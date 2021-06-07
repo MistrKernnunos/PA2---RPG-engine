@@ -6,8 +6,8 @@
 
 #include "CFileLoader.h"
 #include "CFileLoaderIterator.h"
+#include "CPlayerCreator.h"
 #include "CRoom.h"
-
 bool CGame::LoadMap(const std::string &path) {
   CFileLoader loader;
   if (!loader.LoadXmlFile(path)) {
@@ -93,9 +93,10 @@ void CGame::Render() {
   m_Interface.Print(*room);
 }
 bool CGame::Start() {
-  while (true) {
-    m_Rooms.at(m_CurrRoomID)->ExecuteTurns();
+  while (m_Rooms.at(m_CurrRoomID)->ExecuteTurns()) {
+    Render();
   }
+
 }
 bool CGame::Save() const {
   CFileLoader save;
@@ -115,7 +116,7 @@ bool CGame::Save() const {
     elem.second->Save(it);
     it.Next();
   }
-  save.SaveFile("./test.xml");
+  return save.SaveFile("./test.xml");
 }
 bool CGame::saveSpawnPoint(CFileLoaderIt it) const {
   if (it.GetName() != "spawnPoint") {
@@ -127,4 +128,15 @@ bool CGame::saveSpawnPoint(CFileLoaderIt it) const {
   if (!it.Next()) return false;
 
   return m_SpawnPoint.Save(it);
+}
+bool CGame::CreateGame() {
+  CPlayerCreator creator;
+  auto player = creator.Create();
+}
+bool CGame::SpawnPlayer(std::shared_ptr<CEntity> player) {
+  return m_Rooms.at(m_spawnRoomID)->TransferEntityToRoom(player, m_SpawnPoint);
+}
+void CGame::EndGame() {
+  std::string message = "What dou you want to do?\n1)Save game\n2)quit";
+
 }

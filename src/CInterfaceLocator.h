@@ -5,7 +5,7 @@
 
 class CInterfaceLocator {
  public:
-  static CInterface& getInerface();
+  static CInterface& getInterface();
   static void provide(CInterface* interface);
 
  private:

@@ -19,7 +19,7 @@ class CMenu {
   //  bool loadGame(CGame& game);
   //  bool startGame(CGame & game);
   bool loadMap(CGame& game);
-  //  bool createGame(CGame & game);
+    bool createGame(CGame & game);
   //  bool quit();
   CInterface& m_Interface;
 };

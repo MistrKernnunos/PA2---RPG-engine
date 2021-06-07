@@ -45,3 +45,10 @@ std::map<CCoordinates, std::shared_ptr<CEntity>> CEntityLoader::LoadEntities(CFi
   }
   return entities;
 }
+std::shared_ptr<CEntity> CEntityLoader::CreateEntity(const std::string& id) {
+  auto entity = m_EntityFactory.createObject(id);
+  if (m_HasController.count(id) == 1) {
+    entity->AttachController(m_ControlerFactory.createObject(id));
+  }
+  return entity;
+}

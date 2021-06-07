@@ -64,4 +64,5 @@ class CInventory {
 
   bool saveItems(CFileLoaderIt it) const;
   bool saveWeapons(CFileLoaderIt it) const;
+  bool erase(size_t index, invType type);
 };

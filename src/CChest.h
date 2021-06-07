@@ -20,7 +20,7 @@ class CChest : public CEntity {
   /**
    * executes one turn
    */
-  virtual void Turn();
+  virtual bool Turn();
 
   /**
    * Facilitates attack action

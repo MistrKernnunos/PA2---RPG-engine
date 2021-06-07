@@ -8,7 +8,7 @@
 class CZombieController : public CControler {
  public:
   ~CZombieController() override = default;
-  void Control(CEntity& toControl) override;
+  bool Control(CEntity& toControl) override;
   static std::shared_ptr<CControler> Create();
 
  private:

@@ -3,19 +3,24 @@
 //
 
 #include "CMenu.h"
+
 #include "CInterface.h"
+#include "CPlayerCreator.h"
 bool CMenu::RunMenu(CGame& game) {
-  std::string message = "1) load map";
+  std::string message = "1) load game\n2) create game\n";
   bool state = false;
 
   while (!state) {
     int res = m_Interface.PromtWithMessage<int>(message);
-    if (res > 0 && res <= 1) {
+    if (res > 0 && res <= 2) {
       state = true;
     }
     switch (res) {
       case 1:
         state = loadMap(game);
+        break;
+      case 2:
+        state = createGame(game);
         break;
       default:
         m_Interface.Message("Wrong options, choose again!");
@@ -27,7 +32,6 @@ bool CMenu::RunMenu(CGame& game) {
 
 bool CMenu::loadMap(CGame& game) {
   std::string filePath = m_Interface.PromtWithMessage<std::string>("Enter path to map file:");
-  game.IsInitialized();
   try {
     game.LoadMap(filePath);
   } catch (std::exception& error) {
@@ -39,4 +43,12 @@ bool CMenu::loadMap(CGame& game) {
     return false;
   }
   return true;
+}
+bool CMenu::createGame(CGame& game) {
+  m_Interface.Message("First you need to create your entity");
+  CPlayerCreator creator;
+  auto player = creator.Create();
+  m_Interface.Message("Then you need to load map");
+  loadMap(game);
+  game.SpawnPlayer(player);
 }

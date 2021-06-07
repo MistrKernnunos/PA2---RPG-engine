@@ -18,6 +18,7 @@ std::string CSword::PrintToString() {
   message += "\n";
   message += "  range: ";
   message += std::to_string(GetRange());
+  return message;
 }
 bool CSword::addEntityID(CFileLoaderIt it) const {
   if (it.GetName() != "weapon") {

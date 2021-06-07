@@ -72,12 +72,12 @@ bool CEntity::loadProperties(CFileLoaderIt iterator) {
   iterator.Next(2);
   m_AttackCost = std::stoi(iterator.GetContent("attackCost"));
   iterator.Next(2);
-  m_DefenseConst = std::stoi(iterator.GetContent("defenseCost"));
+  m_DefenseCost = std::stoi(iterator.GetContent("defenseCost"));
   iterator.Next(2);
   return true;
 }
 void CEntity::AttachController(std::shared_ptr<CControler> controler) { m_Controller = controler; }
-bool CEntity::InsertIntoRoom(std::weak_ptr<CRoom> room) { m_Room = room; }
+bool CEntity::InsertIntoRoom(std::weak_ptr<CRoom> room) { m_Room = room;}
 
 std::vector<std::shared_ptr<CEntity>> CEntity::GetEntitiesInRange(int range) const {
   return m_Room.lock()->EntitiesInRange(m_Coordinates, range);
@@ -88,7 +88,7 @@ std::ostream& operator<<(std::ostream& os, const CEntity& entity) {
 }
 int CEntity::GetMovementCost() const { return m_MovementCost; }
 int CEntity::GetAttackCost() const { return m_AttackCost; }
-int CEntity::GetDefenseConst() const { return m_DefenseConst; }
+int CEntity::GetDefenseConst() const { return m_DefenseCost; }
 int CEntity::GetCurrActionPoints() const { return m_CurrActionPoints; }
 state CEntity::GetState() const { return m_State; }
 
@@ -130,6 +130,6 @@ bool CEntity::saveProperties(CFileLoaderIt it) {
   it.CreateNewTextChildNode("levelCoef", std::to_string(m_NextLevelCoef));
   it.CreateNewTextChildNode("movementCost", std::to_string(m_MovementCost));
   it.CreateNewTextChildNode("attackCost", std::to_string(m_AttackCost));
-  it.CreateNewTextChildNode("defenseCost", std::to_string(m_DefenseConst));
+  it.CreateNewTextChildNode("defenseCost", std::to_string(m_DefenseCost));
   return true;
 }

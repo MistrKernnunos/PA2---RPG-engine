@@ -3,8 +3,9 @@
 //
 #include "CChest.h"
 
-void CChest::Turn() {
+bool CChest::Turn() {
   // chest does nothing in her turn
+  return true;
 }
 
 bool CChest::Attack(CEntity& toAttack, const CWeapon& weapon) {

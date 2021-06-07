@@ -40,12 +40,16 @@ bool CInventory::drop(size_t index, invType type) {
   if (type == ITEM) {
     if (index < m_Inventory.size()) {
       auto it = m_Inventory.begin() + index;
+      m_CurrSize -= (*it)->GetSize();
       m_Inventory.erase(it);
+      return true;
     }
   } else {
     if (index < m_WeaponInventory.size()) {
       auto it = m_WeaponInventory.begin() + index;
+      m_CurrSize -= (*it)->GetSize();
       m_WeaponInventory.erase(it);
+      return true;
     }
   }
   return false;
@@ -94,8 +98,7 @@ std::unique_ptr<CItem> CInventory::TakeItem(size_t index) {
   std::unique_ptr<CItem> ptr;
   if (index < m_Inventory.size()) {
     ptr.swap(m_Inventory.at(index));
-    m_CurrSize -= ptr->GetSize();
-    this->drop(index, ITEM);
+    this->erase(index, ITEM);
     return ptr;
   }
   return ptr;
@@ -106,7 +109,7 @@ std::unique_ptr<CWeapon> CInventory::TakeWeapon(size_t index) {
   if (index < m_WeaponInventory.size()) {
     ptr.swap(m_WeaponInventory.at(index));
     m_CurrSize -= ptr->GetSize();
-    this->drop(index, WEAPON);
+    this->erase(index, WEAPON);
     return ptr;
   }
   return ptr;
@@ -160,4 +163,18 @@ bool CInventory::saveWeapons(CFileLoaderIt it) const {
     elem->Save(it);
     it.Next();
   }
+}
+bool CInventory::erase(size_t index, invType type) {
+  if (type == ITEM) {
+    if (index < m_Inventory.size()) {
+      auto it = m_Inventory.begin() + index;
+      m_Inventory.erase(it);
+    }
+  } else {
+    if (index < m_WeaponInventory.size()) {
+      auto it = m_WeaponInventory.begin() + index;
+      m_WeaponInventory.erase(it);
+    }
+  }
+  return false;
 }

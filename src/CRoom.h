@@ -29,14 +29,14 @@ class CRoom {
   /**
    * executes turns for all entites in room
    */
-  void ExecuteTurns();
+  bool ExecuteTurns();
   /**
    * transfers entity to this room
    * @param entity which entity to this room
    * @param doorNumber number of door to which entity arrives
    * @return true if succeeded, else if not
    */
-  //  bool TransferEntityToRoom(std::shared_ptr<CEntity> entity, int doorNumber);
+    bool TransferEntityToRoom(std::shared_ptr<CEntity> entity, const CCoordinates& spawnpoint);
   /**
    * transfers entity from this room to dest room
    * @param dest room where to transfer the entity
