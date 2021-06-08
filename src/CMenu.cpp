@@ -33,7 +33,7 @@ bool CMenu::RunMenu(CGame& game) {
 bool CMenu::loadMap(CGame& game) {
   std::string filePath = m_Interface.PromtWithMessage<std::string>("Enter path to map file:");
   try {
-    game.LoadMap(filePath);
+    game.LoadMap(filePath, GAME);
   } catch (std::exception& error) {
     game.Erase();
 #ifdef DEBUG

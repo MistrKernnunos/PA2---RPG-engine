@@ -8,7 +8,7 @@
 #include "CFileLoaderIterator.h"
 #include "CMap.h"
 #include "CPlayerCreator.h"
-bool CGame::LoadMap(const std::string &path) {
+bool CGame::LoadMap(const std::string& path, toLoad what) {
   CFileLoader loader;
   if (!loader.LoadXmlFile(path)) {
     throw std::invalid_argument("cant open map file");
@@ -18,6 +18,15 @@ bool CGame::LoadMap(const std::string &path) {
   it.Child();
   it.Next();
 
+  std::string playerPresent = it.GetContent("playerPresent");
+
+  if (playerPresent == "no" && GAME == what) {
+    throw std::invalid_argument("player not in game");
+  } else if (playerPresent == "yes" && what == MAP) {
+    throw std::invalid_argument("player in game");
+  } else if (playerPresent != "no" || playerPresent != "yes") {
+    throw std::invalid_argument("wrong content");
+  }
   m_Name = it.GetContent("name");
   if (m_Name.empty()) {
     return false;
@@ -95,7 +104,7 @@ void CGame::Render() {
 void CGame::Start() {
   while (m_Rooms.at(m_CurrRoomID)->ExecuteTurns()) {
   }
-    EndGame();
+  EndGame();
 }
 bool CGame::Save() const {
   CFileLoader save;
@@ -111,7 +120,7 @@ bool CGame::Save() const {
     it.CreateNewChildNode("room");
   }
   it.Child();
-  for (auto &elem : m_Rooms) {
+  for (auto& elem : m_Rooms) {
     elem.second->Save(it);
     it.Next();
   }

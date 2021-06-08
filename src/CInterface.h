@@ -6,13 +6,15 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
-#include <sstream>
 #include <string>
 #include <utility>
 
 class CInterface {
  public:
-  CInterface(std::ostream& out, std::istream& in) : m_Out(out), m_In(in) {}
+  CInterface(std::ostream& out, std::istream& in) : m_Out(out), m_In(in) {
+    m_In.exceptions(std::ios_base::eofbit | std::ios_base::badbit);
+    m_In.exceptions(std::ios_base::eofbit | std::ios_base::badbit | std::ios_base::failbit);
+  }
 
   template <class returnType>
   returnType PromtWithMessage(const std::string& message) const;
@@ -45,6 +47,7 @@ returnType CInterface::PromtWithMessage(const std::string& message) const {
     Message("Wrong input, enter again🙄");
     m_In.clear();  // clear input
     m_In.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    m_In.ignore();
   }
   return res;
 }

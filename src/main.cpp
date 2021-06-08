@@ -10,11 +10,20 @@ int main() {
   CInterface interface(std::cout, std::cin);
   CInterfaceLocator::provide(&interface);
   CGame game(interface);
-  CMenu menu(interface);
-  if (menu.RunMenu(game)) {
-    if (game.IsInitialized()) {
-      game.Start();
+  //try catch blok inspired by @David Bernhauer https://gitlab.fit.cvut.cz/bernhdav/pa2-minesweeper/blob/master/src/main.cpp
+
+  try {
+    CMenu menu(interface);
+    if (menu.RunMenu(game)) {
+      if (game.IsInitialized()) {
+        game.Start();
+      }
     }
+  } catch (const std::ios::failure& error) {
+    if (std::cin.eof()) {
+      return 0;
+    }
+    std::cout << error.what() << std::endl;
   }
   return 1;
 }

@@ -12,6 +12,11 @@ class CHealthPotion;
 class CItemLoader {
  public:
   CItemLoader();
+  /**
+   * loads items from file
+   * @param iterator from where to load
+   * @return vector of unique pointers to items
+   */
   std::vector<std::unique_ptr<CItem>> LoadItems(CFileLoaderIt iterator);
 
  private:

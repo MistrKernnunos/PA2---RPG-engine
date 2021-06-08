@@ -30,7 +30,17 @@ class CWeapon {
 
   virtual std::string PrintToString() = 0;
 
+  /**
+   * loads weapon from xml file
+   * @param it to the weapon node
+   * @return true if successful
+   */
   bool Load(CFileLoaderIt it);
+  /**
+   * saves weapon to xml file
+   * @param it to the weapon node
+   * @return true if successful
+   */
   bool Save(CFileLoaderIt it) const;
 
   friend std::ostream& operator<<(std::ostream& os, const CWeapon& weapon);
@@ -42,6 +52,12 @@ class CWeapon {
   size_t GetSize() const;
 
  private:
+
+  /**
+   * utility function for saving weaponID as node property
+   * @param it iterator to node
+   * @return true if successfully
+   */
   virtual bool addEntityID(CFileLoaderIt it) const = 0;
 
   std::string m_Name;

@@ -38,15 +38,45 @@ class CWall {
    * @return true if they connects else false
    */
   bool Connects(const CWall& other) const;
+  /**
+   * checks if point is on the wall
+   * @param X
+   * @param Y
+   * @return true if it is on the wall, false if not
+   */
   bool Contains(int X, int Y) const;
 
+  /**
+   * static function, that creates and return wall
+   * @param it iterator to node from which to load
+   * @return loaded walls
+   */
   static CWall LoadWall(CFileLoaderIt it);
+  /**
+   * loads wall from xml tree
+   * @param it iterator over xml tree pointing to head of wall
+   * @return true if succeeded or false
+   */
   bool Load(CFileLoaderIt it);
+  /**
+   * saves wall to xml file
+   * @param it to the file
+   * @return true if successful
+   */
   bool Save(CFileLoaderIt it);
   const CCoordinates& GetStart() const;
   const CCoordinates& GetEnd() const;
+  /**
+   * prints wall to buffer for player
+   * @param outputBuffer
+   * @param floor string of the floor
+   */
   void PrintToBuffer(std::vector<std::vector<std::string>>& outputBuffer, const std::string& floor);
 
+  /**
+   * exports wall to map
+   * @param map map to export the wall
+   */
   void ExportToMap(std::vector<std::vector<EMapElem>>& map);
 
  private:

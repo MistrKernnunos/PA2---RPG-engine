@@ -136,3 +136,4 @@ bool CEntity::saveProperties(CFileLoaderIt it) {
   return true;
 }
 int CEntity::GetMovement() const { return m_Movement; }
+void CEntity::ChangePostion(CCoordinates coordinates) { m_Coordinates = coordinates; }

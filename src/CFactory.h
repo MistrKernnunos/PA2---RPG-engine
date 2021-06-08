@@ -7,16 +7,37 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
-
+/**
+ * abstract class factory
+ * @tparam absClass
+ * @tparam identifier
+ * @tparam retType return type
+ * @tparam maker
+ */
 template <class absClass, typename identifier, class retType = std::shared_ptr<absClass>,
           class maker = std::function<retType(void)>>
 class CFactory {
  public:
   CFactory() = default;
+  /**
+   * registers entity to the factory
+   * @param id identifier of the entity
+   * @param creator function that returns the entity
+   * @return true if successful
+   */
   bool Register(const std::string& id, maker creator);
-
+  /**
+   * unregisters entity
+   * @param id identifier of the entity
+   * @return true if successful
+   */
   bool UnRegister(const identifier& id);
 
+  /**
+   * returns entity according to identifier
+   * @param id identifier of entity to create
+   * @return created entity
+   */
   retType createObject(const identifier& id);
 
  private:

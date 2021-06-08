@@ -67,6 +67,12 @@ class CEntity {
    */
   virtual bool Move(const int x, const int y) = 0;
 
+  /**
+   * changes position of entity
+   * @param coordinates where to put the entity;
+   */
+  void ChangePostion(CCoordinates coordinates);
+
   bool IsLootable();
 
   void AttachController(std::shared_ptr<CControler> controler);

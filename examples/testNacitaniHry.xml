@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<map>
+    <playerPresent>yes</playerPresent>
+    <name>jmenoMapy</name>
+    <spawnPoint>
+        <roomID>1</roomID>
+        <coordinates>
+            <X>5</X>
+            <Y>2</Y>
+        </coordinates>
+    </spawnPoint>
+    <rooms>
+        <room ID="1" name="JmenoMistnosti">
+            <perimeter>
+                <wall>
+                    <coordinates name="start">
+                        <X>1</X>
+                        <Y>1</Y>
+                    </coordinates>
+                    <coordinates name="end">
+                        <X>40</X>
+                        <Y>1</Y>
+                    </coordinates>
+                </wall>
+                <wall>
+                    <coordinates name="start">
+                        <X>40</X>
+                        <Y>1</Y>
+                    </coordinates>
+                    <coordinates name="end">
+                        <X>40</X>
+                        <Y>20</Y>
+                    </coordinates>
+                </wall>
+                <wall>
+                    <coordinates name="start">
+                        <X>40</X>
+                        <Y>20</Y>
+                    </coordinates>
+                    <coordinates name="end">
+                        <X>1</X>
+                        <Y>20</Y>
+                    </coordinates>
+                </wall>
+                <wall>
+                    <coordinates name="start">
+                        <X>1</X>
+                        <Y>20</Y>
+                    </coordinates>
+                    <coordinates name="end">
+                        <X>1</X>
+                        <Y>1</Y>
+                    </coordinates>
+                </wall>
+            </perimeter>
+            <inner>
+                <wall>
+                    <coordinates name="start">
+                        <X>10</X>
+                        <Y>4</Y>
+                    </coordinates>
+                    <coordinates name="end">
+                        <X>10</X>
+                        <Y>8</Y>
+                    </coordinates>
+                </wall>
+                <wall>
+                    <coordinates name="start">
+                        <X>5</X>
+                        <Y>4</Y>
+                    </coordinates>
+                    <coordinates name="end">
+                        <X>5</X>
+                        <Y>8</Y>
+                    </coordinates>
+                </wall>
+            </inner>
+            <entities>
+                <entity entityID="chest">
+                    <properties>
+                        <name>velka truhla</name>
+                        <maxHealth>150</maxHealth>
+                        <health>100</health>
+                        <attack>20</attack>
+                        <defense>5</defense>
+                        <actionPoints>5</actionPoints>
+                        <xp>20</xp>
+                        <level>1000</level>
+                        <movement>50</movement>
+                        <levelCoef>5</levelCoef>
+                        <movementCost>1</movementCost>
+                        <attackCost>2</attackCost>
+                        <defenseCost>1</defenseCost>
+                    </properties>
+                    <coordinates>
+                        <X>3</X>
+                        <Y>2</Y>
+                    </coordinates>
+                    <inventory>
+                        <size>20</size>
+                        <items>
+                            <item itemID="healthPotion">
+                                <name>Great health potion</name>
+                                <healing>50</healing>
+                                <size>3</size>
+                            </item>
+                            <item itemID="healthPotion">
+                                <name>Great health potion</name>
+                                <healing>50</healing>
+                                <size>3</size>
+                            </item>
+                            <item itemID="healthPotion">
+                                <name>Great health potion</name>
+                                <healing>50</healing>
+                                <size>3</size>
+                            </item>
+                        </items>
+                        <weapons/>
+                    </inventory>
+                </entity>
+                <entity entityID="zombie">
+                    <properties>
+                        <name>Velky zombik</name>
+                        <maxHealth>150</maxHealth>
+                        <health>100</health>
+                        <attack>20</attack>
+                        <defense>5</defense>
+                        <actionPoints>5</actionPoints>
+                        <xp>20</xp>
+                        <level>1000</level>
+                        <movement>50</movement>
+                        <levelCoef>5</levelCoef>
+                        <movementCost>1</movementCost>
+                        <attackCost>2</attackCost>
+                        <defenseCost>1</defenseCost>
+                    </properties>
+                    <coordinates>
+                        <X>4</X>
+                        <Y>5</Y>
+                    </coordinates>
+                    <inventory>
+                        <size>10</size>
+                        <items>
+                            <item itemID="healthPotion">
+                                <name>Great health potion</name>
+                                <healing>50</healing>
+                                <size>3</size>
+                            </item>
+                        </items>
+                        <weapons>
+                            <weapon weaponID="sword">
+                                <name>velky mec</name>
+                                <range>3</range>
+                                <attackPower>10</attackPower>
+                                <defensePower>2</defensePower>
+                                <size>3</size>
+                            </weapon>
+                        </weapons>
+                    </inventory>
+                </entity>
+                <entity entityID="player">
+                    <properties>
+                        <name>hrac</name>
+                        <maxHealth>300</maxHealth>
+                        <health>300</health>
+                        <attack>20</attack>
+                        <defense>5</defense>
+                        <actionPoints>5</actionPoints>
+                        <xp>20</xp>
+                        <level>10</level>
+                        <movement>50</movement>
+                        <levelCoef>5</levelCoef>
+                        <movementCost>1</movementCost>
+                        <attackCost>2</attackCost>
+                        <defenseCost>1</defenseCost>
+                    </properties>
+                    <coordinates>
+                        <X>8</X>
+                        <Y>4</Y>
+                    </coordinates>
+                    <inventory>
+                        <size>10</size>
+                        <items>
+                            <item itemID="healthPotion">
+                                <name>Great health potion</name>
+                                <healing>50</healing>
+                                <size>3</size>
+                            </item>
+                        </items>
+                        <weapons>
+                            <weapon weaponID="sword">
+                                <name>velky mec</name>
+                                <range>2</range>
+                                <attackPower>10</attackPower>
+                                <defensePower>2</defensePower>
+                                <size>3</size>
+                            </weapon>
+                        </weapons>
+                    </inventory>
+                </entity>
+            </entities>
+        </room>
+    </rooms>
+</map>

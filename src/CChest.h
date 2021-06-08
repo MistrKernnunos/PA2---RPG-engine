@@ -12,6 +12,11 @@ class CChest : public CEntity {
   }
 
  private:
+  /**
+   * save utility function. Adds entityID to entity node
+   * @param it iterator to entity node
+   * @return true if successful
+   */
   bool addEntityId(CFileLoaderIt it) override;
 
  public:
@@ -40,5 +45,11 @@ class CChest : public CEntity {
    */
   static std::shared_ptr<CEntity> Create();
 
+  /**
+   * does nothing it is stationary chest
+   * @param x
+   * @param y
+   * @return false all the time
+   */
   bool Move(const int x, const int y) override;
 };

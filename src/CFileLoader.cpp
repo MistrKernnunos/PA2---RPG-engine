@@ -17,23 +17,6 @@ bool CFileLoader::LoadXmlFile(const std::string filePath) {
   return true;
 }
 
-void CFileLoader::printXML(xmlNode* a_node) {
-  xmlNode* cur_node = nullptr;
-  xmlChar* key = nullptr;
-  for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
-    if (cur_node->type == XML_ELEMENT_NODE) {
-      printf("node type: Element, name: %s", cur_node->name);
-      if (xmlStrcmp(cur_node->name, (const xmlChar*)"X1") == 0) {
-        key = xmlNodeListGetString(doc, cur_node->children, 1);
-        printf(" value: %s", key);
-        xmlFree(key);
-      }
-      printf("\n");
-    }
-    printXML(cur_node->children);
-  }
-}
-
 xmlNode* CFileLoader::getNode(const char* name, xmlNode* node) {
   xmlNode* currNode = nullptr;
   for (currNode = node; currNode; currNode = currNode->next) {

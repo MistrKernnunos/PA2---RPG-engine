@@ -10,14 +10,15 @@ class CMenu {
  public:
   CMenu(CInterface& interface) : m_Interface(interface) {}
 
+  /**
+   * runs the menu
+   * @param game game to control with menu
+   * @return true if successful, false if not or quit
+   */
   bool RunMenu(CGame& game);
 
  private:
-  //  bool createPlayer();
-  //  bool loadGame(CGame& game);
-  //  bool startGame(CGame & game);
   bool loadMap(CGame& game);
-    bool createGame(CGame & game);
-  //  bool quit();
+  bool createGame(CGame& game);
   CInterface& m_Interface;
 };

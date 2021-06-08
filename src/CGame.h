@@ -12,6 +12,7 @@
 #include "CFileLoader.h"
 #include "CFileLoaderIterator.h"
 #include "CInterface.h"
+enum toLoad { GAME, MAP };
 class CMap;
 class CGame {
  public:
@@ -19,15 +20,21 @@ class CGame {
   CGame(const CGame &) = delete;
   CGame &operator=(const CGame &) = delete;
 
-  //  bool LoadGame();
-
-  bool LoadMap(const std::string &path);
-/**
- * saves game
- * @return true if successful
- */
+  /**
+   * loads map
+   * @param path path to map file
+   * @return true if successful
+   */
+  bool LoadMap(const std::string &path, toLoad what = MAP);
+  /**
+   * saves game
+   * @return true if successful
+   */
   bool Save() const;
 
+  /**
+   * starts the game
+   */
   void Start();
   /**
    * gives player choice to save game or to end without saving
@@ -36,6 +43,9 @@ class CGame {
 
   bool IsInitialized() const;
 
+  /**
+   * clears the game
+   */
   void Erase();
   /**
    * checks whether it is possible to get from start to end in range steps

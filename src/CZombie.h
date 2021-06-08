@@ -41,8 +41,12 @@ class CZombie : public CEntity {
    * @return
    */
   bool Move(const int x, const int y);
-
+  /**
+   * creates empty zombie
+   * @return
+   */
   static std::shared_ptr<CEntity> Create();
+
   bool GetAttacked() const;
 
  private:

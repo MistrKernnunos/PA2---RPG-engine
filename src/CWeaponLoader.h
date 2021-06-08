@@ -12,6 +12,11 @@
 class CWeaponLoader {
  public:
   CWeaponLoader();
+  /**
+   * loads weapons from xml file
+   * @param iterator to the weapons node
+   * @return vector of uniq pointers to weapons
+   */
   std::vector<std::unique_ptr<CWeapon>> LoadWeapons(CFileLoaderIt iterator);
 
  private:

@@ -7,7 +7,6 @@
 #include <ostream>
 #include <vector>
 
-#include "CDoor.h"
 #include "CEntityLoader.h"
 #include "CFileLoaderIterator.h"
 #include "CWall.h"
@@ -18,12 +17,17 @@ class CMap {
   CMap(int ID, const std::string& name, CGame& game);
   ~CMap() = default;
   /**
-   * loads room from xml tree
+   * loads map from xml tree
    * @param iterator iterator over xml tree pointing to head of room
    * @return true if succeeded or false
    */
   bool Load(CFileLoaderIt iterator, std::weak_ptr<CMap> roomPtr);
 
+  /**
+   * saves map to file
+   * @param it where to save it
+   * @return true if successful
+   */
   bool Save(CFileLoaderIt it) const;
 
   /**
@@ -37,31 +41,41 @@ class CMap {
    * @return true if succeeded, else if not
    */
   bool TransferEntityToRoom(std::shared_ptr<CEntity> entity, const CCoordinates& spawnpoint);
-  /**
-   * transfers entity from this room to dest room
-   * @param dest room where to transfer the entity
-   * @param entity entity which to transfer
-   * @param doorNumber which door is used
-   * @return true if succeeded, else if not
-   */
-  //  bool TransferEntityFromRoom(std::shared_ptr<CRoom> dest, std::shared_ptr<CEntity> entity, int doorNumber);
-  /**
-   * prints room to the interface
-   * @param interface interface to print through
-   */
-  //    void PrintToBuffer(const CInterface& interface);
-
-  //  bool MoveEntity();
 
   friend std::ostream& operator<<(std::ostream& os, const CMap& room);
-
+  /**
+   *tries to move the entity from start to end in range
+   * @param start of the move
+   * @param end of the move
+   * @param range the max range
+   * @return true if possible, false if not
+   */
   bool Move(const CCoordinates& start, const CCoordinates& end, int range);
 
+  /**
+   * renders the map
+   */
   void Render();
 
+  /**
+   * finds entities in range around pos
+   * @param pos position from where to look
+   * @param range in which to look
+   * @return vector of found entities
+   */
   std::vector<std::shared_ptr<CEntity>> EntitiesInRange(const CCoordinates& pos, int range) const;
+  /**
+   * find lootable entities in loot range
+   * @param pos position from to loot
+   * @return vector of lootable entities
+   */
   std::vector<std::shared_ptr<CEntity>> GetLootableEntities(const CCoordinates& pos) const;
 
+  /**
+   * gets what is on position
+   * @param pos position to check
+   * @return EMapElem
+   */
   EMapElem isAtPosition(const CCoordinates& pos) const;
 
  private:
@@ -70,9 +84,6 @@ class CMap {
   // entities present in the room and their coordinates
   std::map<CCoordinates, std::shared_ptr<CEntity>> m_Entities;
   std::vector<std::shared_ptr<CEntity>> m_EntitiesVector;
-  // index is door which this connection belong to,
-  // pointer to room which connect and door number
-  std::vector<std::unique_ptr<CDoor>> m_Doors;
   // vector of walls, they are defined by two pairs of coordinates
   std::vector<std::unique_ptr<CWall>> perimeterWalls;
   std::vector<std::unique_ptr<CWall>> innerWalls;

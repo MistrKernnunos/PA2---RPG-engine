@@ -100,15 +100,12 @@ std::ostream& operator<<(std::ostream& os, const CMap& room) {
   std::vector<std::vector<std::string>> outputBuffer;
   std::string floor = "\33[47m \33[0m";
 
-  //----print walls and doors to buffer----
+  //----print walls  to buffer----
   for (auto& elem : room.perimeterWalls) {
     elem->PrintToBuffer(outputBuffer, floor);
   }
   for (auto& elem : room.innerWalls) {
     elem->PrintToBuffer(outputBuffer, floor);
-  }
-  for (auto& elem : room.m_Doors) {
-    elem->PrintToBuffer(outputBuffer);
   }
   //----print entities to buffer---
   for (auto& elem : room.m_Entities) {
@@ -326,6 +323,7 @@ bool CMap::TransferEntityToRoom(std::shared_ptr<CEntity> entity, const CCoordina
   if (m_Map.at(spawnPoint.Y()).at(spawnPoint.X()) != EMapElem::FLOOR) {
     throw std::invalid_argument("entity cant be on top another");
   }
+  entity->ChangePostion(spawnPoint);
   m_Entities.emplace(spawnPoint, entity);
   return true;
 }

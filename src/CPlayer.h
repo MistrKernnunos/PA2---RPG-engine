@@ -34,6 +34,12 @@ class CPlayer : public CEntity {
    */
   int Attacked(const int attackDamage) override;
 
+  /**
+   * facilitates movement
+   * @param x
+   * @param y
+   * @return true if possible else false
+   */
   bool Move(const int x, const int y) override;
   static std::shared_ptr<CEntity> Create();
 };
