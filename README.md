@@ -54,3 +54,8 @@ době jejího načítání. Má jedinou abstraktni funkci a to funkci `control`.
 
 Dále je polymorfismus využit i v třídě `CItem`, která ma abstraktní funkci `Effect`, která provede efekt předmětu a také
 mám tříd `CWeapon`, která má abstraktní funkci `Attack`.
+
+
+#Makefile
+
+Pomocí `make` lze postavit hru a dokumentaci, `make run` spustí hru. 
