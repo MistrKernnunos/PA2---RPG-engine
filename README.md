@@ -56,6 +56,6 @@ Dále je polymorfismus využit i v třídě `CItem`, která ma abstraktní funkc
 mám tříd `CWeapon`, která má abstraktní funkci `Attack`.
 
 
-#Makefile
+# Makefile
 
 Pomocí `make` lze postavit hru a dokumentaci, `make run` spustí hru. 
